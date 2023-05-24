@@ -20,3 +20,7 @@ To use SafeRoute, simply navigate to the homepage of the web application at http
 - Name: Oleksandr Zhuk
 - [My project](https://github.com/SashaBeetle/Zhuk.University.Tachka)
 - [Pull Request](https://github.com/SashaBeetle/SafeRoute/pull/1#pullrequestreview-1442150893)
+
+- Name: Ostap Blystsiv
+- [My project](https://github.com/blystsiv/connectify)
+- [Pull Request](https://github.com/blystsiv/SafeRoute/pull/1)
