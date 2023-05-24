@@ -10,6 +10,11 @@ from app.backend.app.externalAPI.geocode import GeocodioRequests
 
 #координати -> перевірка чи кешовано -> якшо ні, то створити грід -> заповнити його через worldpop і geocode -> кинути  цей грід в map_response
 
-async def load_from_geocode(grid:Grid) -> Grid:
+async def load_from_geocode(grid:Grid) -> bool:
     gr = GeocodioRequests()
     await gr.reverse_geocode_async(grid)
+    return True
+
+async def load_from_worldpop(grid:Grid) -> bool:
+    
+    return True

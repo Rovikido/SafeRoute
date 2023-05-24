@@ -15,9 +15,9 @@ class WorldPopRequests:
         # add here maker for featurecollection
         return gjson
 
-    def get_data(self, ):
+    def get_data(self):
         pass
         
 def load_from_file():
-    pass #TODO:
+    pass #TODO: 
 
