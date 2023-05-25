@@ -63,12 +63,10 @@ def sample_segment():
     ])
 
 def test_grid_initialization(sample_segment):
-    res = 0.5
     grid = Grid(sample_segment)
     assert len(grid.points) == 4
 
 def test_split_by_res(sample_segment):
-    res = 99
     grid = Grid(sample_segment)
     chunks = grid.split_by_res(3.0)
     assert len(chunks) == 4
