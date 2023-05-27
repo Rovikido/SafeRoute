@@ -16,3 +16,11 @@ The application will be accessible at http://localhost:8000 in your web browser.
 
 To use SafeRoute, simply navigate to the homepage of the web application at http://localhost:8000. The application will automatically display a map with a heatmap overlay that shows the dangerousness levels in the area.
 
+# 📒 Lab 4 
+- Name: Oleksandr Zhuk
+- [My project](https://github.com/SashaBeetle/Zhuk.University.Tachka)
+- [Pull Request](https://github.com/SashaBeetle/SafeRoute/pull/1#pullrequestreview-1442150893)
+
+- Name: Ostap Blystsiv
+- [My project](https://github.com/blystsiv/connectify)
+- [Pull Request](https://github.com/blystsiv/SafeRoute/pull/1)
