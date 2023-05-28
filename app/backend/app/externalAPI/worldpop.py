@@ -7,7 +7,7 @@ import math
 
 from app.backend.utility.coordinates import Point, Segment, Grid, create_grid
 
-# Define the area of interest as a bounding box
+# TODO: refactor this whole file, and remove rednundancy
 class WorldPopRequests:
     def __init__(self, key=None) -> None:
         if key is not None:
@@ -39,7 +39,7 @@ async def _calculate_average(cells, point:Point, resolution):
     return result
 
 
-async def load_from_file(grid:Grid):
+async def load_pops_from_file(grid:Grid):
     try:
         with rasterio.open("/pop_data_small.tif") as src:
             image = src.read(1)
