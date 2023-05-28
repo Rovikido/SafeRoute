@@ -9,7 +9,7 @@ from app.backend.utility.coordinates import Grid
 from app.backend.app.externalAPI.geocode import GeocodioRequests
 from app.backend.app.externalAPI.worldpop import load_pops_from_file
 
-#координати -> перевірка чи кешовано -> якшо ні, то створити грід -> заповнити його через worldpop і geocode -> нормалізувати дату в ньому -> кинути грід в map_response
+#координати -> перевірка чи кешовано -> якшо ні, то створити грід -> заповнити його через worldpop і geocode -> доповнтити пустуючі значення-> нормалізувати дату в ньому -> кинути грід в map_response
 
 async def load_from_geocode(grid:Grid) -> bool:
     gr = GeocodioRequests()
