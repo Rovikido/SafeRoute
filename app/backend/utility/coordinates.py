@@ -1,4 +1,5 @@
 import geojson
+import numpy as np
 
 
 class Point:
@@ -21,7 +22,6 @@ class Point:
     
 
 class Segment:
-    # TODO: implement __hash__ and __eq__ functions (for why googele can class instance be used as a key?)
     def __init__(self, points = [Point]) -> None:
         self.points = points
         self.center = self.get_center()
@@ -63,6 +63,8 @@ class Grid:
         self.seg = seg
         self.resolution = 0
         self.chunks = []
+        self.chunk_mat = [] # terrible workaround TODO: refactor all usage of chunks, to adapt chunk_mat
+        self.data_bounds = {'pop_count_adj': None, 'income': None}
 
     def split_by_res(self, resolution):
         self.resolution = resolution
@@ -77,6 +79,7 @@ class Grid:
 
         chunks = []
         for i in range(num_chunks_x):
+            # rows = []
             for j in range(num_chunks_y):
                 chunk_min_x = min_x + i * resolution
                 chunk_max_x = chunk_min_x + resolution
@@ -95,7 +98,31 @@ class Grid:
     def get_centers(self):
         centers = [c.center for c in self.chunks]
         return centers
+    
+    # def remove_missing_values(self, depth=10, fallof=2):
+                
 
+    def normalize_data(self):
+        # constructing bounds
+        for val, bound in self.data_bounds.items(): 
+            if bound:
+                continue
+            self.data_bounds[val][0] = min([c.data[val] for c in self.chunks if c.data[val] != -1])
+            self.data_bounds[val][1] = max([c.data[val] for c in self.chunks if c.data[val] != -1])
+        
+        # normalizing using bounds
+        for c in self.chunks:
+            if self.data_bounds['pop_count_adj']:
+                c.data['pop_count_adj'] = (c.data['pop_count_adj'] - self.data_bounds['pop_count_adj'][0]) / self.data_bounds['pop_count_adj'][1]
+            if self.data_bounds['income']:
+                c.data['income'] = (c.data['income'] - self.data_bounds['income'][0]) / self.data_bounds['income'][1]
+        
+        # reset bounds
+        for val, _ in self.data_bounds.items(): 
+            self.data_bounds[val] = [0,1]
+
+
+        
 
 def create_grid(self, seg:Segment, res_m=1000):
     res = res_m/1000/111
