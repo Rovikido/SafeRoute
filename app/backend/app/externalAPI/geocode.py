@@ -23,7 +23,7 @@ class GeocodioRequests:
         url = f"https://api.geocod.io/v1.6/reverse"
 
         async with aiohttp.ClientSession() as session:
-            for chunk in grid.chunks:
+            for chunk in grid.chunks: # is a placeholder. TODO replace with asyncio.gather
                 params = {
                     "q": f"{chunk.center.x},{chunk.center.y}",
                     "fields": "acs-economics",
