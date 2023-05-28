@@ -18,24 +18,33 @@ class GeocodioRequests:
     def __load_key(self) -> str:
         load_dotenv()
         return os.getenv("GEOCODE_API_KEY")
-
+    
+    #TODO: test
+    async def __fetch_data(session:aiohttp.ClientSession, url:str, params:dict, chunk:Segment):
+        async with session.get(url, params=params) as response:
+            result = await response.json()
+            if result['results']:
+                # check is for keyerror due to bad data.(value if exists else 0)
+                income_list = [result['results'][i]['fields']['acs']['economics']['Median household income']['Total']['value']
+                            if result['results'][i]['fields']['acs']['economics']['Median household income'].get('Total', 0)
+                            else 0 for i in range(len(result['results']))]
+                income = sum(list(filter(lambda x: x != 0, income_list))) / len(income_list)
+                chunk.data['income'] = income
+    #TODO: test
     async def reverse_geocode_async(self, grid:Grid):
-        url = f"https://api.geocod.io/v1.6/reverse"
+        url = "https://api.geocod.io/v1.6/reverse"
 
         async with aiohttp.ClientSession() as session:
-            for chunk in grid.chunks: # is a placeholder. TODO replace with asyncio.gather
+            tasks = []
+            for chunk in grid.chunks:
                 params = {
                     "q": f"{chunk.center.x},{chunk.center.y}",
                     "fields": "acs-economics",
                     "api_key": self.__key
                 }
-                async with session.get(url, params=params) as response:
-                    result = await response.json()
-                    if result['results']:
-                        # check is for keyerror due to bad data.(value if exists else 0)
-                        income_list = [result['results'][i]['fields']['acs']['economics']['Median household income']['Total']['value'] 
-                                    if result['results'][i]['fields']['acs']['economics']['Median household income'].get('Total', 0) 
-                                    else 0 for i in range(len(result['results']))]
-                        income = sum(list(filter(lambda x: x != 0, income_list)))/len(income_list)
-                        chunk.data['income'] = income
-            return grid
+                task = asyncio.create_task(self.__fetch_data(session, url, params, chunk))
+                tasks.append(task)
+
+            await asyncio.gather(*tasks)
+
+        return grid
