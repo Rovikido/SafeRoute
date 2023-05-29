@@ -1,5 +1,5 @@
 import geojson
-import numpy as np
+import math
 
 
 class Point:
@@ -63,7 +63,7 @@ class Grid:
         self.seg = seg
         self.resolution = 0
         self.chunks = []
-        self.chunk_mat = [] # terrible workaround TODO: refactor all usage of chunks, to adapt chunk_mat
+        self.shape = [0,0]
         self.data_bounds = {'pop_count_adj': None, 'income': None}
 
     def split_by_res(self, resolution):
@@ -76,10 +76,9 @@ class Grid:
 
         num_chunks_x = int((max_x - min_x) / resolution)
         num_chunks_y = int((max_y - min_y) / resolution)
-
+        self.shape = [num_chunks_x, num_chunks_y]
         chunks = []
         for i in range(num_chunks_x):
-            # rows = []
             for j in range(num_chunks_y):
                 chunk_min_x = min_x + i * resolution
                 chunk_max_x = chunk_min_x + resolution
@@ -99,8 +98,57 @@ class Grid:
         centers = [c.center for c in self.chunks]
         return centers
     
-    # def remove_missing_values(self, depth=10, fallof=2):
-                
+    def __get_chunk(self, x, y):
+        if x < 0 or y < 0 or x >= self.shape[0] or y >= self.shape[1]:
+            return None
+        return self.chunks[y * self.shape[1] + x]
+    
+    def __remove_missing_value(self, x, y, value_key, depth=3):
+        res = 0
+        initial_chunk = self.__get_chunk(x, y)
+        weights = [0.5 + math.pow(0.5, depth)] + [math.pow(0.5, p) for p in range(2, depth+1)]
+        used_neighbours = {initial_chunk}
+        prev_iteration = [initial_chunk]
+
+        for dp in range(depth):
+            temp_prev_neighbours = []
+
+            for p in prev_iteration: 
+                chunk = self.__get_chunk(p.center.x + 1, p.center.y)
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                    temp_prev_neighbours.append(chunk)
+                    used_neighbours.add(chunk)
+
+                chunk = self.__get_chunk(p.center.x, p.center.y - 1)
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                    temp_prev_neighbours.append(chunk)
+                    used_neighbours.add(chunk)
+
+                chunk = self.__get_chunk(p.center.x - 1, p.center.y)
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                    temp_prev_neighbours.append(chunk)
+                    used_neighbours.add(chunk)
+
+                chunk = self.__get_chunk(p.center.x, p.center.y + 1)
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                    temp_prev_neighbours.append(chunk)
+                    used_neighbours.add(chunk)
+
+            l_res = [n.data[value_key] for n in temp_prev_neighbours]
+            l_res = sum(l_res) / len(l_res) if len(l_res) > 0 else 0
+            res += l_res * weights[dp]
+            prev_iteration = temp_prev_neighbours
+
+        return res
+
+    def remove_missing_values(self, value_key, depth=5):
+        for x in range(self.shape[0]):
+            for y in range(self.shape[1]):
+                chunk = self.__get_chunk(x, y)
+                if chunk.data['pop_count_adj'] == -1:
+                    self.__remove_missing_value(x, y, 'pop_count_adj', depth=depth-1)
+                if chunk.data['income'] <=0:
+                    self.__remove_missing_value(x, y, 'income', depth=depth+1)
 
     def normalize_data(self):
         # constructing bounds
