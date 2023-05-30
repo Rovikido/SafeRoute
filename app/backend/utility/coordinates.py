@@ -1,5 +1,6 @@
 import geojson
 import math
+import asyncio
 
 
 class Point:
@@ -22,10 +23,11 @@ class Point:
     
 
 class Segment:
-    def __init__(self, points = [Point]) -> None:
+    def __init__(self, points = [Point], resolution = -1) -> None:
         self.points = points
-        self.center = self.get_center()
+        self.center = self.__get_center()
         self.data = {'pop_count_adj': -1, 'income': -1, 'crime_level': -1}
+        self.resolution = -1
 
     def __get_center(self):
         min_x = min([p.x for p in self.points])
@@ -53,6 +55,13 @@ class Segment:
     def get_feature(self):
         return geojson.Feature(geometry=self.get_polygon())
     
+    async def to_json(self):
+        res = {'cords': {'center': {'lon': self.center.x, 'lat': self.center.y}, 
+                         'vert': [{'lon': p.x, 'lat': p.y} for p in self.points]},
+               'data': self.data,
+               'resolution': self.resolution}
+        return res
+        
     def __hash__(self) -> int:
         return self.center.__hash__()
     
@@ -86,7 +95,7 @@ class Grid:
                 chunk_max_y = chunk_min_y + resolution
 
                 chunk = Segment([Point(chunk_min_x, chunk_min_y), Point(chunk_max_x, chunk_min_y), 
-                         Point(chunk_max_x, chunk_max_y), Point(chunk_min_x, chunk_max_y)])
+                         Point(chunk_max_x, chunk_max_y), Point(chunk_min_x, chunk_max_y)], resolution=resolution)
                 
                 if self.seg.point_in_segment(chunk.center):
                     chunks.append(chunk)
@@ -139,9 +148,9 @@ class Grid:
             res += l_res * weights[dp]
             prev_iteration = temp_prev_neighbours
 
-        return res
+        return res if res > 0 else -1
 
-    def remove_missing_values(self, value_key, depth=5):
+    def remove_missing_values(self, depth=5):
         for x in range(self.shape[0]):
             for y in range(self.shape[1]):
                 chunk = self.__get_chunk(x, y)
@@ -155,7 +164,8 @@ class Grid:
         for val, bound in self.data_bounds.items(): 
             if bound:
                 continue
-            self.data_bounds[val][0] = min([c.data[val] for c in self.chunks if c.data[val] != -1])
+            min_v = min([c.data[val] for c in self.chunks if c.data[val] != -1])
+            self.data_bounds[val][0] = min_v if min_v > 0 else 0
             self.data_bounds[val][1] = max([c.data[val] for c in self.chunks if c.data[val] != -1])
         
         # normalizing using bounds
@@ -168,8 +178,14 @@ class Grid:
         # reset bounds
         for val, _ in self.data_bounds.items(): 
             self.data_bounds[val] = [0,1]
-
-
+    
+    async def to_json(self):
+        loop = asyncio.get_event_loop()
+        task_list = []
+        for c in self.chunks:
+            task_list.append(loop.create_task(c.to_json()))
+        res = await asyncio.gather(*task_list)
+        return res
         
 
 def create_grid(self, seg:Segment, res_m=1000):
