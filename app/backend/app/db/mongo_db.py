@@ -45,6 +45,7 @@ class Mongo:
             print(e)
 
 m = Mongo()
-# m.test()
-print(m.client.list_database_names())
-print((m.client.map).list_collection_names())
+m.test()
+
+
+grid = create_grid(Segment([Point(-77.08, 38.96), Point(-76.94, 38.96), Point(-76.94, 38.92), Point(-77.08, 38.92)]))

@@ -4,7 +4,7 @@ import asyncio
 
 
 class Point:
-    def __init__(self, x, y) -> None:
+    def __init__(self, x, y):
         """
         x: Longitude
         y: Latitude
@@ -188,7 +188,7 @@ class Grid:
         return res
         
 
-def create_grid(self, seg:Segment, res_m=1000):
+def create_grid(seg:Segment, res_m=1000):
     res = res_m/1000/111
     grid = Grid(seg)
     grid.split_by_res(res)
