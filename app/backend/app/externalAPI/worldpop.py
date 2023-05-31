@@ -4,6 +4,7 @@ import rasterio
 import asyncio
 import numpy as np
 import math
+import asyncstdlib
 
 from app.backend.utility.coordinates import Point, Segment, Grid, create_grid
 
@@ -38,27 +39,43 @@ async def _calculate_average(cells, point:Point, resolution):
     
     return result
 
+async def async_range(stop, start=0, step=1):
+    if stop:
+        range_ = range(start, stop, step)
+    else:
+        range_ = range(start)
+    for i in range_:
+        yield i
+        await asyncio.sleep(0)
 
 async def load_pops_from_file(grid:Grid):
     try:
-        with rasterio.open("/pop_data_small.tif") as src:
+        with rasterio.open("pop_data_small.tif") as src:
             image = src.read(1)
             bounds = src.bounds
             resolution = (src.transform.a + src.transform.e) / 2
             step = (abs(bounds[2] - bounds[0])/np.shape(image)[1] + abs(bounds[3] - bounds[1])/np.shape(image)[0]) / 2
 
-        for i in range(len(grid.chunks)):
+        tasks = []
+        async for i in async_range(len(grid.chunks)):
             top_left_x = abs(grid.chunks[i].center.x - bounds[0])//step # top_left index
             top_left_y = abs(grid.chunks[i].center.y - bounds[3])//step # top_left index
 
-            #TODO check if x and y not swapped places
-            value = await _calculate_average({image[top_left_x, top_left_y]: [bounds[0] + top_left_x * step, bounds[3] + top_left_y * step],
-                                   image[top_left_x + 1, top_left_y]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + top_left_y * step], 
-                                   image[top_left_x + 1, top_left_y + 1]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + (top_left_y + 1) * step], 
-                                   image[top_left_x, top_left_y + 1]: [bounds[0] + top_left_x * step, bounds[3] + (top_left_y + 1) * step]},
-                                   grid.chunks[i].center, resolution)
-            grid.chunks[i].data['pop_count_adj'] = value
+            task = asyncio.create_task(_calculate_average({
+                image[int(top_left_x), int(top_left_y)]: [bounds[0] + top_left_x * step, bounds[3] + top_left_y * step],
+                image[int(top_left_x) + 1, int(top_left_y)]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + top_left_y * step], 
+                image[int(top_left_x) + 1, int(top_left_y) + 1]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + (top_left_y + 1) * step], 
+                image[int(top_left_x), int(top_left_y) + 1]: [bounds[0] + top_left_x * step, bounds[3] + (top_left_y + 1) * step]
+            }, grid.chunks[i].center, resolution))
+
+            tasks.append(task)
+
+        results = await asyncio.gather(*tasks)
+
+        for i, result in enumerate(results):
+            grid.chunks[i].data['pop_count_adj'] = result
+
+        grid.data_bounds['pop_count_adj'] = [np.ma.masked_less(image, 0.1).min(), image.max()]
+
     except FileNotFoundError as e:
         raise ValueError(f"Tif file was not found! Check path for errors.\n{e}")
-    except Exception as e:
-        raise Exception(f"Unknown error during loading from file!\n{e}")
