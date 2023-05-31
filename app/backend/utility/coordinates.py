@@ -84,9 +84,9 @@ class Grid:
         min_y = min(p.y for p in self.points)
         max_y = max(p.y for p in self.points)
 
-        num_chunks_x = math.ceil((max_x - min_x) / resolution)
-        num_chunks_y = math.ceil((max_y - min_y) / resolution)
-        self.shape = [num_chunks_x-1, num_chunks_y]
+        num_chunks_x = math.floor((max_x - min_x) / resolution)
+        num_chunks_y = math.floor((max_y - min_y) / resolution)
+        self.shape = [num_chunks_x-1, num_chunks_y-1]
         chunks = []
         for i in range(num_chunks_x):
             for j in range(num_chunks_y):
@@ -103,6 +103,7 @@ class Grid:
                 ], resolution=resolution)
 
                 if self.seg.point_in_segment(chunk.center):
+
                     chunks.append(chunk)
 
         self.chunks = chunks
@@ -113,10 +114,12 @@ class Grid:
         return centers
     
     def __get_chunk(self, x, y):
-        if x < 0 or y < 0 or x >= self.shape[0] or y >= self.shape[1]:
-            return None
-        
-        return self.chunks[y * self.shape[1] + x]
+        try:
+            if x < 0 or y < 0 or x >= self.shape[0] or y >= self.shape[1]:
+                return None
+            return self.chunks[y * self.shape[1] + x]
+        except IndexError as e:
+            raise IndexError(f'x:{x}, y:{y}, shape:{self.shape}, len:{len(self.chunks)}, index:{y * self.shape[1] + x}\n{e}')
     
     def __remove_missing_value(self, x, y, value_key, depth=3):
         res = 0
@@ -156,7 +159,7 @@ class Grid:
 
         return res if res > 0 else -1
 
-    def remove_missing_values(self, depth=5): #TODO: make be able to run in parallel
+    def remove_missing_values(self, depth=5):
         for x in range(self.shape[0]):
             for y in range(self.shape[1]):
                 chunk = self.__get_chunk(x, y)
