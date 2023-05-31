@@ -20,10 +20,10 @@ class GeocodioRequests:
         return os.getenv("GEOCODE_API_KEY")
     
     #TODO: test
-    async def __fetch_data(session:aiohttp.ClientSession, url:str, params:dict, chunk:Segment):
+    async def __fetch_data(self, session:aiohttp.ClientSession, url:str, params:dict, chunk:Segment):
         async with session.get(url, params=params) as response:
             result = await response.json()
-            if result['results']:
+            if result.get('results'):
                 # check is for keyerror due to bad data.(value if exists else 0)
                 income_list = [result['results'][i]['fields']['acs']['economics']['Median household income']['Total']['value']
                             if result['results'][i]['fields']['acs']['economics']['Median household income'].get('Total', 0)
@@ -38,7 +38,7 @@ class GeocodioRequests:
             tasks = []
             for chunk in grid.chunks:
                 params = {
-                    "q": f"{chunk.center.x},{chunk.center.y}",
+                    "q": f"{chunk.center.y},{chunk.center.x}",
                     "fields": "acs-economics",
                     "api_key": self.__key
                 }
