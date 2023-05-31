@@ -1,4 +1,5 @@
 import geojson
+import shapely.geometry as sg
 import math
 import asyncio
 
@@ -19,7 +20,7 @@ class Point:
         return f"Point x:{self.x} y:{self.y}"
     
     def __hash__(self) -> int:
-        return hash(self.x, self.y)
+        return hash((self.x, self.y))
     
 
 class Segment:
@@ -27,7 +28,7 @@ class Segment:
         self.points = points
         self.center = self.__get_center()
         self.data = {'pop_count_adj': -1, 'income': -1, 'crime_level': -1}
-        self.resolution = -1
+        self.resolution = resolution
 
     def __get_center(self):
         min_x = min([p.x for p in self.points])
@@ -38,10 +39,10 @@ class Segment:
         return Point((min_x + max_x)/2, (min_y + max_y)/2)
     
     def point_in_segment(self, point) -> bool:
-        polygon = self.get_polygon()
-        point_coords = (point.x, point.y)
+        polygon = sg.Polygon([(p.x, p.y) for p in self.points])
+        shapely_point = sg.Point(point.x, point.y)
         
-        return polygon.contains(geojson.Point(point_coords))
+        return polygon.contains(shapely_point)
 
     def get(self):
         return self.points
@@ -78,14 +79,14 @@ class Grid:
     def split_by_res(self, resolution):
         self.resolution = resolution
 
-        min_x = min([p.x for p in self.points])
-        max_x = max([p.x for p in self.points])
-        min_y = min([p.y for p in self.points])
-        max_y = max([p.y for p in self.points])
+        min_x = min(p.x for p in self.points)
+        max_x = max(p.x for p in self.points)
+        min_y = min(p.y for p in self.points)
+        max_y = max(p.y for p in self.points)
 
-        num_chunks_x = int((max_x - min_x) / resolution)
-        num_chunks_y = int((max_y - min_y) / resolution)
-        self.shape = [num_chunks_x, num_chunks_y]
+        num_chunks_x = math.ceil((max_x - min_x) / resolution)
+        num_chunks_y = math.ceil((max_y - min_y) / resolution)
+        self.shape = [num_chunks_x-1, num_chunks_y]
         chunks = []
         for i in range(num_chunks_x):
             for j in range(num_chunks_y):
@@ -94,9 +95,13 @@ class Grid:
                 chunk_min_y = min_y + j * resolution
                 chunk_max_y = chunk_min_y + resolution
 
-                chunk = Segment([Point(chunk_min_x, chunk_min_y), Point(chunk_max_x, chunk_min_y), 
-                         Point(chunk_max_x, chunk_max_y), Point(chunk_min_x, chunk_max_y)], resolution=resolution)
-                
+                chunk = Segment([
+                    Point(chunk_min_x, chunk_min_y),
+                    Point(chunk_max_x, chunk_min_y),
+                    Point(chunk_max_x, chunk_max_y),
+                    Point(chunk_min_x, chunk_max_y)
+                ], resolution=resolution)
+
                 if self.seg.point_in_segment(chunk.center):
                     chunks.append(chunk)
 
@@ -110,6 +115,7 @@ class Grid:
     def __get_chunk(self, x, y):
         if x < 0 or y < 0 or x >= self.shape[0] or y >= self.shape[1]:
             return None
+        
         return self.chunks[y * self.shape[1] + x]
     
     def __remove_missing_value(self, x, y, value_key, depth=3):
@@ -117,30 +123,30 @@ class Grid:
         initial_chunk = self.__get_chunk(x, y)
         weights = [0.5 + math.pow(0.5, depth)] + [math.pow(0.5, p) for p in range(2, depth+1)]
         used_neighbours = {initial_chunk}
-        prev_iteration = [initial_chunk]
+        prev_iteration = [[x, y]]
 
         for dp in range(depth):
             temp_prev_neighbours = []
 
             for p in prev_iteration: 
-                chunk = self.__get_chunk(p.center.x + 1, p.center.y)
+                chunk = self.__get_chunk(p[0] + 1, p[1])
                 if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
-                    temp_prev_neighbours.append(chunk)
+                    temp_prev_neighbours.append([p[0] + 1, p[1]])
                     used_neighbours.add(chunk)
 
-                chunk = self.__get_chunk(p.center.x, p.center.y - 1)
+                chunk = self.__get_chunk(p[0], p[1] - 1)
                 if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
-                    temp_prev_neighbours.append(chunk)
+                    temp_prev_neighbours.append([p[0], p[1] - 1])
                     used_neighbours.add(chunk)
 
-                chunk = self.__get_chunk(p.center.x - 1, p.center.y)
+                chunk = self.__get_chunk(p[0] - 1, p[1])
                 if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
-                    temp_prev_neighbours.append(chunk)
+                    temp_prev_neighbours.append([p[0] - 1, p[1]])
                     used_neighbours.add(chunk)
 
-                chunk = self.__get_chunk(p.center.x, p.center.y + 1)
+                chunk = self.__get_chunk(p[0], p[1] + 1)
                 if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
-                    temp_prev_neighbours.append(chunk)
+                    temp_prev_neighbours.append([p[0], p[1] + 1])
                     used_neighbours.add(chunk)
 
             l_res = [n.data[value_key] for n in temp_prev_neighbours]
@@ -150,13 +156,16 @@ class Grid:
 
         return res if res > 0 else -1
 
-    def remove_missing_values(self, depth=5):
+    def remove_missing_values(self, depth=5): #TODO: make be able to run in parallel
         for x in range(self.shape[0]):
             for y in range(self.shape[1]):
                 chunk = self.__get_chunk(x, y)
-                if chunk.data['pop_count_adj'] == -1:
+                if not chunk:
+                    continue
+                if chunk.data['pop_count_adj'] < 0:
                     self.__remove_missing_value(x, y, 'pop_count_adj', depth=depth-1)
-                if chunk.data['income'] <=0:
+                    print(f"Changed value to {chunk.data['pop_count_adj']}")
+                if chunk.data['income'] <= 0:
                     self.__remove_missing_value(x, y, 'income', depth=depth+1)
 
     def normalize_data(self):
