@@ -35,7 +35,7 @@ async def _calculate_average(cells, point:Point, resolution):
     result = 0
     for data, cords in cells.items():
         distance = await _get_distance(cords, [point.x, point.y])
-        result += data * (distance / resolution) / 4 #TODO check if x and y not swapped places
+        result += data * (distance / resolution) / len(cells) #TODO check if x and y not swapped places
     
     return result
 
@@ -54,18 +54,18 @@ async def load_pops_from_file(grid:Grid):
             image = src.read(1)
             bounds = src.bounds
             resolution = (src.transform.a + src.transform.e) / 2
-            step = (abs(bounds[2] - bounds[0])/np.shape(image)[1] + abs(bounds[3] - bounds[1])/np.shape(image)[0]) / 2
+            step = (abs(bounds[2] - bounds[0])/np.shape(image)[0] + abs(bounds[3] - bounds[1])/np.shape(image)[1]) / 2
 
         tasks = []
         async for i in async_range(len(grid.chunks)):
-            top_left_x = abs(grid.chunks[i].center.x - bounds[0])//step # top_left index
-            top_left_y = abs(grid.chunks[i].center.y - bounds[3])//step # top_left index
-
+            top_left_x = int(abs(grid.chunks[i].center.x - bounds[0])//step) # top_left index
+            top_left_y = int(abs(grid.chunks[i].center.y - bounds[3])//step)  # top_left index
+            # print(f'tlx:{top_left_x}, tly:{top_left_y}')
             task = asyncio.create_task(_calculate_average({
-                image[int(top_left_x), int(top_left_y)]: [bounds[0] + top_left_x * step, bounds[3] + top_left_y * step],
-                image[int(top_left_x) + 1, int(top_left_y)]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + top_left_y * step], 
-                image[int(top_left_x) + 1, int(top_left_y) + 1]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + (top_left_y + 1) * step], 
-                image[int(top_left_x), int(top_left_y) + 1]: [bounds[0] + top_left_x * step, bounds[3] + (top_left_y + 1) * step]
+                image[top_left_x, top_left_y]: [bounds[0] + top_left_x * step, bounds[3] + top_left_y * step],
+                image[top_left_x + 1, top_left_y]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + top_left_y * step], 
+                image[top_left_x + 1, top_left_y + 1]: [bounds[0] + (top_left_x + 1) * step, bounds[3] + (top_left_y + 1) * step], 
+                image[top_left_x, top_left_y + 1]: [bounds[0] + top_left_x * step, bounds[3] + (top_left_y + 1) * step]
             }, grid.chunks[i].center, resolution))
 
             tasks.append(task)
@@ -74,8 +74,7 @@ async def load_pops_from_file(grid:Grid):
 
         for i, result in enumerate(results):
             grid.chunks[i].data['pop_count_adj'] = result
-
-        grid.data_bounds['pop_count_adj'] = [np.ma.masked_less(image, 0.1).min(), image.max()]
+        grid.data_bounds['pop_count_adj'] = [np.ma.masked_less(image, 0.1).min(), np.max(image)]
 
     except FileNotFoundError as e:
         raise ValueError(f"Tif file was not found! Check path for errors.\n{e}")
