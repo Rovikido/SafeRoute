@@ -86,7 +86,7 @@ class Grid:
         
         num_chunks_x = math.floor((max_x - min_x) / resolution)
         num_chunks_y = math.floor((max_y - min_y) / resolution)
-        print(f'ncx:{num_chunks_x}, ncy:{num_chunks_y}, x-x:{(max_x - min_x)}, y-y:{(max_y - min_y)}, res:{resolution}')
+        # print(f'ncx:{num_chunks_x}, ncy:{num_chunks_y}, x-x:{(max_x - min_x)}, y-y:{(max_y - min_y)}, res:{resolution}')
 
         # chunks_len = []
         chunks = []
