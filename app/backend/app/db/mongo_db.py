@@ -59,14 +59,14 @@ m = Mongo()
 m.test()
 m.mapdb.delete_many({})
 
-grid = create_grid(Segment([Point(-77.08, 38.96), Point(-74.94, 37.96), Point(-74.94, 38.92), Point(-77.08, 37.92)]), 100000)
+grid = create_grid(Segment([Point(-77.1, 39.0), Point(-76.9, 38.8), Point(-76.9, 39.0), Point(-77.08, 38.8)]), 1000)
 print(len(grid.chunks))
 # run(load_from_geocode(grid))
 run(load_from_worldpop(grid))
 print("Loading succsesful!")
 
 grid.remove_missing_values()
-# grid.normalize_data()
+grid.normalize_data()
 print("Normalization succsesful!")
 
 run(load_from_model(grid))
