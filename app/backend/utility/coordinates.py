@@ -83,17 +83,19 @@ class Grid:
         max_x = max(p.x for p in self.points)
         min_y = min(p.y for p in self.points)
         max_y = max(p.y for p in self.points)
-
+        
         num_chunks_x = math.floor((max_x - min_x) / resolution)
         num_chunks_y = math.floor((max_y - min_y) / resolution)
+        print(f'ncx:{num_chunks_x}, ncy:{num_chunks_y}, x-x:{(max_x - min_x)}, y-y:{(max_y - min_y)}, res:{resolution}')
+
         # chunks_len = []
         chunks = []
         for i in range(num_chunks_x):
             sub_chunks = []
             for j in range(num_chunks_y):
-                chunk_min_x = min_x + i * resolution
+                chunk_min_x = chunk_min_x = min_x + (i * resolution) - resolution * (num_chunks_x - 1)
                 chunk_max_x = chunk_min_x + resolution
-                chunk_min_y = min_y + j * resolution
+                chunk_min_y = chunk_min_y = min_y + (j * resolution) - resolution * (num_chunks_y - 1)
                 chunk_max_y = chunk_min_y + resolution
 
                 chunk = Segment([
@@ -110,7 +112,7 @@ class Grid:
             # chunks_len.append(len(sub_chunks))
         self.shape[1] = int(self.shape[0])
         self.chunks = chunks
-        # print(chunks_len)
+        # print([[0, chunks[i].center.y] for i in range(self.shape[0])])
         return chunks
 
     def get_centers(self):
