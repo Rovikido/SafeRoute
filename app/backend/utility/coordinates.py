@@ -151,8 +151,8 @@ class Grid:
                 if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
                     temp_prev_neighbours.append([p[0], p[1] + 1])
                     used_neighbours.add(chunk)
-
-            l_res = [n.data[value_key] for n in temp_prev_neighbours]
+            
+            l_res = [self.__get_chunk(n[0], n[1]).data[value_key]  for n in temp_prev_neighbours]
             l_res = sum(l_res) / len(l_res) if len(l_res) > 0 else 0
             res += l_res * weights[dp]
             prev_iteration = temp_prev_neighbours
@@ -174,16 +174,20 @@ class Grid:
     def normalize_data(self):
         # constructing bounds
         for val, bound in self.data_bounds.items(): 
-            if bound:
+            if bound or len([c.data[val] for c in self.chunks if c.data[val] != -1]) == 0:
                 continue
             min_v = min([c.data[val] for c in self.chunks if c.data[val] != -1])
-            self.data_bounds[val][0] = min_v if min_v > 0 else 0
-            self.data_bounds[val][1] = max([c.data[val] for c in self.chunks if c.data[val] != -1])
-        
+            res = []
+            res.append(min_v if min_v > 0 else 0)
+            res.append(max([c.data[val] for c in self.chunks]))
+            self.data_bounds[val] = res
+        print(self.data_bounds)
         # normalizing using bounds
         for c in self.chunks:
             if self.data_bounds['pop_count_adj']:
+                # print(c.data['pop_count_adj'])
                 c.data['pop_count_adj'] = (c.data['pop_count_adj'] - self.data_bounds['pop_count_adj'][0]) / self.data_bounds['pop_count_adj'][1]
+                # print((c.data['pop_count_adj'] - self.data_bounds['pop_count_adj'][0]) / self.data_bounds['pop_count_adj'][1])
             if self.data_bounds['income']:
                 c.data['income'] = (c.data['income'] - self.data_bounds['income'][0]) / self.data_bounds['income'][1]
         
