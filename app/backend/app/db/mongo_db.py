@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 
 from app.backend.utility.coordinates import Point, Segment, Grid, create_grid
-from app.backend.app.map_request_former import load_from_geocode, load_from_worldpop
+from app.backend.app.map_request_former import load_from_geocode, load_from_worldpop, load_from_model
 
 class Mongo:
     def __init__(self) -> None:
@@ -59,14 +59,18 @@ m = Mongo()
 m.test()
 m.mapdb.delete_many({})
 
-grid = create_grid(Segment([Point(-77.08, 38.96), Point(-74.94, 37.96), Point(-74.94, 38.92), Point(-77.08, 37.92)]), 1000)
+grid = create_grid(Segment([Point(-77.08, 38.96), Point(-74.94, 37.96), Point(-74.94, 38.92), Point(-77.08, 37.92)]), 25000)
 print(len(grid.chunks))
 # run(load_from_geocode(grid))
 run(load_from_worldpop(grid))
 print("Loading succsesful!")
 
-# grid.remove_missing_values()
+grid.remove_missing_values()
 # grid.normalize_data()
+print("Normalization succsesful!")
+
+run(load_from_model(grid))
+
 
 run(m.post_grid(grid))
 print("Succsesfuly posted data!")
