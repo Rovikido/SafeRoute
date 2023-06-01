@@ -86,9 +86,10 @@ class Grid:
 
         num_chunks_x = math.floor((max_x - min_x) / resolution)
         num_chunks_y = math.floor((max_y - min_y) / resolution)
-        self.shape = [num_chunks_x-1, num_chunks_y-1]
+        # chunks_len = []
         chunks = []
         for i in range(num_chunks_x):
+            sub_chunks = []
             for j in range(num_chunks_y):
                 chunk_min_x = min_x + i * resolution
                 chunk_max_x = chunk_min_x + resolution
@@ -102,11 +103,14 @@ class Grid:
                     Point(chunk_min_x, chunk_max_y)
                 ], resolution=resolution)
 
-                if self.seg.point_in_segment(chunk.center):
-
-                    chunks.append(chunk)
-
+                # if self.seg.point_in_segment(chunk.center):
+                sub_chunks.append(chunk)
+            chunks += sub_chunks
+            self.shape = [len(sub_chunks), 0]
+            # chunks_len.append(len(sub_chunks))
+        self.shape[1] = int(self.shape[0])
         self.chunks = chunks
+        # print(chunks_len)
         return chunks
 
     def get_centers(self):
@@ -115,7 +119,7 @@ class Grid:
     
     def __get_chunk(self, x, y):
         try:
-            if x < 0 or y < 0 or x >= self.shape[0] or y >= self.shape[1]:
+            if x < 0 or y < 0 or x >= self.shape[0]-1 or y >= self.shape[1]-1:
                 return None
             return self.chunks[y * self.shape[1] + x]
         except IndexError as e:
@@ -133,22 +137,22 @@ class Grid:
 
             for p in prev_iteration: 
                 chunk = self.__get_chunk(p[0] + 1, p[1])
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0] + 1, p[1]])
                     used_neighbours.add(chunk)
 
                 chunk = self.__get_chunk(p[0], p[1] - 1)
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0], p[1] - 1])
                     used_neighbours.add(chunk)
 
                 chunk = self.__get_chunk(p[0] - 1, p[1])
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0] - 1, p[1]])
                     used_neighbours.add(chunk)
 
                 chunk = self.__get_chunk(p[0], p[1] + 1)
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] != -1:
+                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0], p[1] + 1])
                     used_neighbours.add(chunk)
             
@@ -166,8 +170,9 @@ class Grid:
                 if not chunk:
                     continue
                 if chunk.data['pop_count_adj'] < 0:
+                    print(f'Changed value from {chunk.data["pop_count_adj"]}', end='')
                     self.__remove_missing_value(x, y, 'pop_count_adj', depth=depth-1)
-                    print(f"Changed value to {chunk.data['pop_count_adj']}")
+                    print(f" to {chunk.data['pop_count_adj']}")
                 if chunk.data['income'] <= 0:
                     self.__remove_missing_value(x, y, 'income', depth=depth+1)
 
@@ -181,7 +186,7 @@ class Grid:
             res.append(min_v if min_v > 0 else 0)
             res.append(max([c.data[val] for c in self.chunks]))
             self.data_bounds[val] = res
-        print(self.data_bounds)
+        
         # normalizing using bounds
         for c in self.chunks:
             if self.data_bounds['pop_count_adj']:
