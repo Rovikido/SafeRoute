@@ -13,6 +13,7 @@ NYPD_Arrests_Data__Historic_.csv
 .tif
 .csv
 .env
+.png
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
@@ -34,3 +35,4 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+.gitignore
