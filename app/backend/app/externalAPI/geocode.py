@@ -32,7 +32,7 @@ class GeocodioRequests:
                 chunk.data['income'] = income
     #TODO: test
     async def reverse_geocode_async(self, grid:Grid):
-        url = "https://api.geocod.io/v1.6/reverse"
+        url = "https://api.geocod.io/v1.7/reverse"
 
         async with aiohttp.ClientSession() as session:
             tasks = []
