@@ -23,13 +23,16 @@ class GeocodioRequests:
     async def __fetch_data(self, session:aiohttp.ClientSession, url:str, params:dict, chunk:Segment):
         async with session.get(url, params=params) as response:
             result = await response.json()
-            if result.get('results'):
-                # check is for keyerror due to bad data.(value if exists else 0)
-                income_list = [result['results'][i]['fields']['acs']['economics']['Median household income']['Total']['value']
-                            if result['results'][i]['fields']['acs']['economics']['Median household income'].get('Total', 0)
-                            else 0 for i in range(len(result['results']))]
-                income = sum(list(filter(lambda x: x != 0, income_list))) / len(income_list)
-                chunk.data['income'] = income
+            try:
+                if result.get('results'):
+                    # check is for keyerror due to bad data.(value if exists else 0)
+                    income_list = [result['results'][i]['fields']['acs']['economics']['Median household income']['Total']['value']
+                                if result['results'][i]['fields']['acs']['economics']['Median household income'].get('Total', 0)
+                                else 0 for i in range(len(result['results']))]
+                    income = sum(list(filter(lambda x: x != 0, income_list))) / len(income_list)
+                    chunk.data['income'] = income
+            except aiohttp.ContentTypeError as e:
+                raise Exception(f"{result}\n{e}")
     #TODO: test
     async def reverse_geocode_async(self, grid:Grid):
         url = "https://api.geocod.io/v1.7/reverse"

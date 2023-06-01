@@ -1,3 +1,4 @@
+import numpy as np
 from asyncio import run, create_task, gather
 
 from pymongo.mongo_client import MongoClient
@@ -47,7 +48,11 @@ class Mongo:
         res = await gather(*tasks)
         self.mapdb.insert_many(res)
         # self.mapdb.drop_index('cent_indx')
-
+    
+    def get_2d_map(self):
+        map_data = self.mapdb.find({})
+        return map_data
+    
     def test(self):
         try:
             self.client.admin.command('ping')
@@ -55,22 +60,23 @@ class Mongo:
         except Exception as e:
             print(e)
 
-m = Mongo()
-m.test()
-m.mapdb.delete_many({})
+if __name__ == "__main__":
+    m = Mongo()
+    m.test()
+    # m.mapdb.delete_many({})
 
-grid = create_grid(Segment([Point(-77.1, 39.0), Point(-76.9, 38.8), Point(-76.9, 39.0), Point(-77.08, 38.8)]), 1000)
-print(len(grid.chunks))
-# run(load_from_geocode(grid))
-run(load_from_worldpop(grid))
-print("Loading succsesful!")
+    grid = create_grid(Segment([Point(-77.08, 39.0), Point(-76.9, 38.8), Point(-76.9, 39.0), Point(-77.08, 38.8)]), 1000)
+    print(len(grid.chunks))
+    run(load_from_geocode(grid))
+    run(load_from_worldpop(grid))
+    print("Loading succsesful!")
 
-grid.remove_missing_values()
-grid.normalize_data()
-print("Normalization succsesful!")
+    grid.remove_missing_values()
+    grid.normalize_data()
+    print("Normalization succsesful!")
 
-run(load_from_model(grid))
+    run(load_from_model(grid))
 
 
-run(m.post_grid(grid))
-print("Succsesfuly posted data!")
+    run(m.post_grid(grid))
+    print("Succsesfuly posted data!")
