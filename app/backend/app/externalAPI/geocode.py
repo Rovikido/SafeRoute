@@ -3,6 +3,7 @@ import geojson
 import aiohttp
 import asyncio
 from geocodio import GeocodioClient
+import time
 
 from dotenv import load_dotenv
 import os
@@ -19,10 +20,11 @@ class GeocodioRequests:
         load_dotenv()
         return os.getenv("GEOCODE_API_KEY")
     
-    #TODO: test
     async def __fetch_data(self, session:aiohttp.ClientSession, url:str, params:dict, chunk:Segment):
         async with session.get(url, params=params) as response:
             result = await response.json()
+            if self.request_count % 900 == 0:
+                await asyncio.sleep(70)
             try:
                 if result.get('results'):
                     # check is for keyerror due to bad data.(value if exists else 0)
@@ -33,9 +35,15 @@ class GeocodioRequests:
                     chunk.data['income'] = income
             except aiohttp.ContentTypeError as e:
                 raise Exception(f"{result}\n{e}")
-    #TODO: test
+            except KeyError as e:
+                chunk.data['income'] = -1        
+        
+        self.request_count += 1
+
+    # Оновлений метод `reverse_geocode_async`
     async def reverse_geocode_async(self, grid:Grid):
         url = "https://api.geocod.io/v1.7/reverse"
+        self.request_count = 1  # Лічильник запитів
 
         async with aiohttp.ClientSession() as session:
             tasks = []

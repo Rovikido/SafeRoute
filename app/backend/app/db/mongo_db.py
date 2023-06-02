@@ -63,9 +63,9 @@ class Mongo:
 if __name__ == "__main__":
     m = Mongo()
     m.test()
-    # m.mapdb.delete_many({})
+    m.mapdb.delete_many({})
 
-    grid = create_grid(Segment([Point(-77.08, 39.0), Point(-76.9, 38.8), Point(-76.9, 39.0), Point(-77.08, 38.8)]), 1000)
+    grid = create_grid(Segment([Point(-77.2, 39.1), Point(-76.8, 38.7), Point(-76.8, 39.1), Point(-77.2, 38.7)]), 1000)
     print(len(grid.chunks))
     run(load_from_geocode(grid))
     run(load_from_worldpop(grid))
