@@ -49,9 +49,50 @@ class Mongo:
         self.mapdb.insert_many(res)
         # self.mapdb.drop_index('cent_indx')
     
-    def get_2d_map(self):
+    # def get_2d_map_data(self):
+    #     map_data = self.mapdb.find({})
+    #     return map_data
+    
+    async def get_in_bounds(self, bounds:tuple):
+        """
+        Filters the map_data based on the provided bounds and returns a new dictionary.
+
+        Arguments:
+        bounds (tuple): A tuple with values (left, bottom, right, top).
+        map_data (list): A list of dictionaries containing map data.
+
+        Returns:
+        dict: A new dictionary with filtered coordinates and data sorted by place.
+        """
+
         map_data = self.mapdb.find({})
-        return map_data
+        res = []
+
+        for item in map_data:
+            cords = item['cords']
+            center_lon = cords['center']['lon']
+            center_lat = cords['center']['lat']
+            
+            if bounds[0] <= center_lon <= bounds[2] and bounds[1] <= center_lat <= bounds[3]:
+                filtered_cords = {
+                    'center': {
+                        'lon': center_lon,
+                        'lat': center_lat
+                    },
+                    'vert': []
+                }
+                for point in cords['vert']:
+                    point_lon = point['lon']
+                    point_lat = point['lat']
+                    
+                    if bounds[0] <= point_lon <= bounds[2] and bounds[1] <= point_lat <= bounds[3]:
+                        filtered_cords['vert'].append({'lon': point_lon, 'lat': point_lat})
+                
+                res.append({
+                    'cords': filtered_cords,
+                    'data': item['data']['crime_level']
+                })
+        return res
     
     def test(self):
         try:
