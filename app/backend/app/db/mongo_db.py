@@ -65,7 +65,7 @@ class Mongo:
         dict: A new dictionary with filtered coordinates and data sorted by place.
         """
 
-        map_data = self.mapdb.find({})
+        map_data = await self.mapdb.find({})
         res = []
 
         for item in map_data:
@@ -94,12 +94,12 @@ class Mongo:
                 })
         return res
     
-    def test(self):
+    async def test(self):
         try:
             self.client.admin.command('ping')
-            print("MongoDB connection succsesful!")
+            return "MongoDB connection succsesful!"
         except Exception as e:
-            print(e)
+            return e
 
 if __name__ == "__main__":
     m = Mongo()
