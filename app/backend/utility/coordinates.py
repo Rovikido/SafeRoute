@@ -93,9 +93,10 @@ class Grid:
         for i in range(num_chunks_x):
             sub_chunks = []
             for j in range(num_chunks_y):
-                chunk_min_x = chunk_min_x = min_x + (i * resolution) - resolution * (num_chunks_x - 1)
+                #RETEST WITH NEW CALCULATION
+                chunk_min_x = min_x + (i * resolution)
                 chunk_max_x = chunk_min_x + resolution
-                chunk_min_y = chunk_min_y = min_y + (j * resolution) - resolution * (num_chunks_y - 1)
+                chunk_min_y = min_y + (j * resolution)
                 chunk_max_y = chunk_min_y + resolution
 
                 chunk = Segment([
