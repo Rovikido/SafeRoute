@@ -78,15 +78,8 @@ class Mongo:
                     'center': {
                         'lon': center_lon,
                         'lat': center_lat
-                    },
-                    'vert': []
+                    }
                 }
-                for point in cords['vert']:
-                    point_lon = point['lon']
-                    point_lat = point['lat']
-                    
-                    if bounds[0] <= point_lon <= bounds[2] and bounds[1] <= point_lat <= bounds[3]:
-                        filtered_cords['vert'].append({'lon': point_lon, 'lat': point_lat})
                 
                 res.append({
                     'cords': filtered_cords,
