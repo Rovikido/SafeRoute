@@ -1,4 +1,5 @@
-from pydantic import BaseModel, validator, Tuple
+from pydantic import BaseModel, validator
+from typing import Tuple
 
 class Bounds(BaseModel):
     bounds: Tuple[float, float, float, float]
