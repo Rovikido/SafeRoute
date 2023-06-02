@@ -1,7 +1,5 @@
 FROM python:3.10.6
 
-
-
 # COPY requirements.txt .
 # RUN pip install -r requirements.txt
 
@@ -15,5 +13,5 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 # Run app.py when the container launches
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
 

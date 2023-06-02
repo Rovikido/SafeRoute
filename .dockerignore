@@ -2,3 +2,7 @@ venv/
 .idea/
 .tif
 .csv
+
+**.tif
+**.csv
+**.png
