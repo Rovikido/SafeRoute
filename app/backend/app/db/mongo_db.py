@@ -65,7 +65,7 @@ class Mongo:
         dict: A new dictionary with filtered coordinates and data sorted by place.
         """
 
-        map_data = await self.mapdb.find({})
+        map_data = self.mapdb.find({})
         res = []
 
         for item in map_data:
