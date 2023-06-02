@@ -1,7 +1,6 @@
 from app.backend.app.db.mongo_db import Mongo
 from fastapi import APIRouter, HTTPException
 
-import json
 
 router = APIRouter()
 mongo_client = None
@@ -40,4 +39,4 @@ async def get_data_from_bounds(l: float, b: float, r: float, t: float):
         ):
         raise HTTPException(status_code=400, detail="Invalid bounds")
     res = await mongo_client.get_in_bounds(bounds)
-    return json.dumps(res)
+    return res
