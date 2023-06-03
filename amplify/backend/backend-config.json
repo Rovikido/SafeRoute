@@ -1,86 +1,5 @@
 {
-  "api": {
-    "saferouteapi": {
-      "apiType": "REST",
-      "build": true,
-      "categoryPolicies": [
-        {
-          "Action": [
-            "lambda:Get*",
-            "lambda:List*",
-            "lambda:Invoke*"
-          ],
-          "Effect": "Allow",
-          "Resource": [
-            {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:aws:lambda:",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ":",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  ":function:",
-                  {
-                    "Ref": "functiongetDataFromBoundsName"
-                  }
-                ]
-              ]
-            }
-          ]
-        }
-      ],
-      "dependsOn": [
-        {
-          "attributes": [
-            "Name"
-          ],
-          "category": "function",
-          "resourceName": "getDataFromBounds"
-        },
-        {
-          "attributes": [
-            "ClusterName",
-            "VpcId",
-            "VpcCidrBlock",
-            "SubnetIds",
-            "VpcLinkId",
-            "CloudMapNamespaceId"
-          ],
-          "category": "",
-          "resourceName": "NetworkStack"
-        }
-      ],
-      "deploymentMechanism": "FULLY_MANAGED",
-      "environmentMap": {
-        "FUNCTION_GETDATAFROMBOUNDS_NAME": {
-          "Ref": "functiongetDataFromBoundsName"
-        }
-      },
-      "iamAccessUnavailable": true,
-      "imageSource": {
-        "type": "CUSTOM"
-      },
-      "mutableParametersState": {
-        "permissions": {
-          "function": {
-            "getDataFromBounds": [
-              "read"
-            ]
-          }
-        }
-      },
-      "providerPlugin": "awscloudformation",
-      "resourceName": "saferouteapi",
-      "restrictAccess": false,
-      "service": "ElasticContainer",
-      "skipHashing": false
-    }
-  },
+  "api": {},
   "auth": {
     "saferouted014f146": {
       "customAuth": false,
@@ -109,11 +28,5 @@
       "service": "Cognito"
     }
   },
-  "function": {
-    "getDataFromBounds": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
-  }
+  "function": {}
 }

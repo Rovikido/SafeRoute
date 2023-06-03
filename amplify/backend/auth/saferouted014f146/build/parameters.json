@@ -10,10 +10,10 @@
   "mfaTypes": [
     "SMS Text Message"
   ],
-  "smsAuthenticationMessage": "Your authentication code is {####}",
-  "smsVerificationMessage": "Your verification code is {####}",
-  "emailVerificationSubject": "Your verification code",
-  "emailVerificationMessage": "Your verification code is {####}",
+  "smsAuthenticationMessage": "Your SR authentication code is {####}",
+  "smsVerificationMessage": "Your SR verification code is {####}",
+  "emailVerificationSubject": "Your SR verification code",
+  "emailVerificationMessage": "Your SR verification code is {####}",
   "defaultPasswordPolicy": false,
   "passwordPolicyMinLength": 8,
   "passwordPolicyCharacters": [],
