@@ -1,5 +1,34 @@
 {
-  "api": {},
+  "api": {
+    "saferouteapi": {
+      "apiType": "REST",
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "ClusterName",
+            "VpcId",
+            "VpcCidrBlock",
+            "SubnetIds",
+            "VpcLinkId",
+            "CloudMapNamespaceId"
+          ],
+          "category": "",
+          "resourceName": "NetworkStack"
+        }
+      ],
+      "deploymentMechanism": "FULLY_MANAGED",
+      "iamAccessUnavailable": true,
+      "imageSource": {
+        "type": "CUSTOM"
+      },
+      "providerPlugin": "awscloudformation",
+      "resourceName": "saferouteapi",
+      "restrictAccess": false,
+      "service": "ElasticContainer",
+      "skipHashing": false
+    }
+  },
   "auth": {
     "saferouted014f146": {
       "customAuth": false,

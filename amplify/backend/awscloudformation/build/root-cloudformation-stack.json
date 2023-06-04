@@ -97,6 +97,19 @@
         "BucketName": {
           "Ref": "DeploymentBucketName"
         },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 7,
+              "NoncurrentVersionExpirationInDays": 7,
+              "Prefix": "codepipeline-amplify/",
+              "Status": "Enabled"
+            }
+          ]
+        },
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
             {
@@ -149,6 +162,64 @@
         },
         "RoleName": {
           "Ref": "UnauthRoleName"
+        }
+      }
+    },
+    "NetworkStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-amplify7b8737d115e94-staging-12955-deployment/amplify-cfn-templates/networkingStackTemplate.json"
+      }
+    },
+    "apisaferouteapi": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-amplify7b8737d115e94-staging-12955-deployment/amplify-cfn-templates/api/saferouteapi-cloudformation-template.json",
+        "Parameters": {
+          "ParamZipPath": "amplify-builds/saferouteapi-4c635a574d6774397963-build.zip",
+          "NetworkStackClusterName": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.ClusterName"
+            ]
+          },
+          "NetworkStackVpcId": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.VpcId"
+            ]
+          },
+          "NetworkStackVpcCidrBlock": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.VpcCidrBlock"
+            ]
+          },
+          "NetworkStackSubnetIds": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.SubnetIds"
+            ]
+          },
+          "NetworkStackVpcLinkId": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.VpcLinkId"
+            ]
+          },
+          "NetworkStackCloudMapNamespaceId": {
+            "Fn::GetAtt": [
+              "NetworkStack",
+              "Outputs.CloudMapNamespaceId"
+            ]
+          },
+          "deploymentBucketName": {
+            "Ref": "DeploymentBucketName"
+          },
+          "rootStackName": {
+            "Ref": "AWS::StackName"
+          },
+          "env": "staging"
         }
       }
     },
@@ -210,7 +281,7 @@
           "adminQueries": false,
           "thirdPartyAuth": false,
           "authProviders": "",
-          "hostedUIProviderCreds": "[{\"ProviderName\":\"Google\",\"client_id\":\"658083118633-vgsm4453ftcabl38o891q5fsfsgtbpeu.apps.googleusercontent.com\",\"client_secret\":\"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\"}]",
+          "hostedUIProviderCreds": "[{\"ProviderName\":\"Google\"}]",
           "env": "staging"
         }
       }

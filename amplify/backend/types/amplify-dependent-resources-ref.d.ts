@@ -1,4 +1,14 @@
 export type AmplifyDependentResourcesAttributes = {
+  "api": {
+    "saferouteapi": {
+      "ApiName": "string",
+      "ClusterName": "string",
+      "ContainerNames": "string",
+      "PipelineName": "string",
+      "RootUrl": "string",
+      "ServiceName": "string"
+    }
+  },
   "auth": {
     "saferouted014f146": {
       "AppClientID": "string",
