@@ -1,20 +1,19 @@
 const { hexToRgb } = require("@mui/material");
 
-function fetchData(l, b, r, t) {
-    return fetch(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`)
-      .then(response => response.json())
-      .then(json => {
-        const res = JSON.parse(json)
-        return res;
-    })
-      .catch(error => {
-        console.error('Error fetching data: ', error);
-        throw error;
-    });
+export async function fetchData(l, b, r, t) {
+  try {
+    const response = await fetch(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
+    const json = await response.json();
+    const res = JSON.parse(json);
+    return res;
+  } catch (error) {
+    console.error('Error fetching data: ', error);
+    throw error;
+  }
 }
 
-export function to_heatmap_data(l, b, r, t, opc = 0.6) {
-  const data = fetchData(l, b, r, t);
+export async function to_heatmap_data(l, b, r, t, opc = 0.6) {
+  const data = await fetchData(l, b, r, t);
 
   const heatmapDataByResolution = {};
 
@@ -50,4 +49,3 @@ export function to_heatmap_data(l, b, r, t, opc = 0.6) {
 
   return heatmaps;
 }
-

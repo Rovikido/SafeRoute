@@ -5,9 +5,7 @@ import { to_heatmap_data } from './JS/load_data';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import css from './css/style.css';
 
-const API_KEY = process.env.REACT_APP_API_KEY
-
-const heatmaps = to_heatmap_data(bounds.west, bounds.south, bounds.east, bounds.north)
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 const MapComponent = () => {
   const [map, setMap] = React.useState(null);
@@ -19,6 +17,8 @@ const MapComponent = () => {
   const onUnmount = React.useCallback(function callback() {
     setMap(null);
   }, []);
+
+  const heatmaps = to_heatmap_data(bounds.west, bounds.south, bounds.east, bounds.north); // Declare heatmaps variable
 
   return (
     <GoogleMap
@@ -44,17 +44,18 @@ const MapComponent = () => {
   );
 };
 
+
 const Map = ({ signOut, user }) => {
   const isLoaded = !!API_KEY;
   const [heatmaps, setHeatmaps] = React.useState([]);
 
   React.useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       const heatmapData = await to_heatmap_data(bounds.west, bounds.south, bounds.east, bounds.north);
       setHeatmaps(heatmapData);
-    };
-    fetchData();
+    })();
   }, []);
+
   return (
     <div>
       <header>
@@ -73,7 +74,7 @@ const Map = ({ signOut, user }) => {
               <a href="./used_data">Used data</a>
             </li>
             <li className="navHover" style={{ textAlign: 'right' }}>
-              <a onClick={signOut} >SIGNOUT</a>
+              <a onClick={signOut}>SIGNOUT</a>
             </li>
           </ul>
         </nav>
@@ -91,4 +92,4 @@ const Map = ({ signOut, user }) => {
 
 export default withAuthenticator(Map, {
   socialProviders: ['google']
-}); 
+});
