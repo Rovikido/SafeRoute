@@ -152,9 +152,9 @@ export const defaultOptions = {
     restriction: {
       latLngBounds: {
         north: 41.3,
-        south: 40,
+        south: 38,
         east: -72,
-        west: -76,
+        west: -78,
       }
     },
     gestureHandling: 'greedy',
