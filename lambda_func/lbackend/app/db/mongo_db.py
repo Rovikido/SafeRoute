@@ -23,7 +23,7 @@ class Mongo:
         map_data (list): A list of dictionaries containing map data.
 
         Returns:
-        dict: A new dictionary with filtered coordinates and data sorted by place.
+        dict: A new dictionary with filtered coordinates, data sorted by place and resolution in meeters.
         """
 
         map_data = self.mapdb.find({})
@@ -35,16 +35,15 @@ class Mongo:
             center_lat = cords['center']['lat']
             
             if bounds[0] <= center_lon <= bounds[2] and bounds[1] <= center_lat <= bounds[3]:
-                filtered_cords = {
-                    'center': {
-                        'lon': center_lon,
-                        'lat': center_lat
-                    }
+                center = {
+                    'lon': center_lon,
+                    'lat': center_lat
                 }
                 
                 res.append({
-                    'cords': filtered_cords,
-                    'data': item['data']['crime_level']
+                    'center': center,
+                    'data': item['data']['crime_level'],
+                    'resolution': item['resolution']
                 })
         return res
     
