@@ -147,7 +147,7 @@ export const defaultCenter = {
     lng: -74
 };
 
-export  const defaultOptions = {
+export const defaultOptions = {
     disableDefaultUI: true,
     restriction: {
       latLngBounds: {
@@ -161,3 +161,5 @@ export  const defaultOptions = {
     styles: mapStyle,
     language: 'en'
 };
+
+export const bounds = defaultOptions.restriction.latLngBounds;
