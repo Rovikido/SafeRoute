@@ -5,6 +5,7 @@ export async function fetchData(l, b, r, t) {
     const response = await fetch(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
     const json = await response.json();
     const res = JSON.parse(json);
+    console.log(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
     console.log(res);
     return res;
   } catch (error) {
