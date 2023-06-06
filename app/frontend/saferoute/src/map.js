@@ -9,6 +9,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 
 const MapComponent = () => {
   const [map, setMap] = React.useState(null);
+  const [heatmaps, setHeatmaps] = React.useState([]);
 
   const onLoad = React.useCallback(function callback(mapInstance) {
     setMap(mapInstance);
@@ -18,7 +19,13 @@ const MapComponent = () => {
     setMap(null);
   }, []);
 
-  const heatmaps = to_heatmap_data(bounds.west, bounds.south, bounds.east, bounds.north); // Declare heatmaps variable
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const heatmapData = await to_heatmap_data(bounds.west, bounds.south, bounds.east, bounds.north);
+      setHeatmaps(heatmapData);
+    };
+    fetchData();
+  }, []);
 
   return (
     <GoogleMap
@@ -47,15 +54,6 @@ const MapComponent = () => {
 
 const Map = ({ signOut, user }) => {
   const isLoaded = !!API_KEY;
-  const [heatmaps, setHeatmaps] = React.useState([]);
-
-  React.useEffect(() => {
-    (async () => {
-      const heatmapData = await to_heatmap_data(bounds.west, bounds.south, bounds.east, bounds.north);
-      setHeatmaps(heatmapData);
-    })();
-  }, []);
-
   return (
     <div>
       <header>
