@@ -3,8 +3,8 @@ const { hexToRgb } = require("@mui/material");
 export async function fetchData(l, b, r, t) {
     console.log(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
   try {
-    const response = await fetch(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
-    const res = JSON.parse(response);
+    response = await fetch(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
+    res = JSON.parse(response);
     console.log(res);
     return res;
   } catch (error) {
@@ -14,9 +14,9 @@ export async function fetchData(l, b, r, t) {
 }
 
 export async function to_heatmap_data(l, b, r, t, opc = 0.6) {
-  const data = await fetchData(l, b, r, t);
+  data = await fetchData(l, b, r, t);
 
-  const heatmapDataByResolution = {};
+  heatmapDataByResolution = {};
 
   for (let entry of data) {
     if (!heatmapDataByResolution.hasOwnProperty(entry.resolution)) {
@@ -29,10 +29,10 @@ export async function to_heatmap_data(l, b, r, t, opc = 0.6) {
     });
   }
 
-  const heatmaps = [];
+  heatmaps = [];
 
   Object.entries(heatmapDataByResolution).forEach(([key, value]) => {
-    const res = {
+    res = {
       positions: [],
       options: {
         radius: (parseInt(key) / 1000) * 20,
