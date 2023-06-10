@@ -16,6 +16,7 @@ class Mongo:
         self.__uri = self.__load_uri()
         self.client = MongoClient(self.__uri, server_api=ServerApi('1'))
         self.mapdb = self.client.map['map']
+        self.page_size = 1000
 
     def __load_uri(self) -> str:
         load_dotenv()
@@ -52,20 +53,30 @@ class Mongo:
     # def get_2d_map_data(self):
     #     map_data = self.mapdb.find({})
     #     return map_data
+
+    # async def recalculate_grid
     
-    async def get_in_bounds(self, bounds:tuple):
+    async def get_in_bounds(self, bounds:tuple, page:int):
         """
-        Filters the map_data based on the provided bounds and returns a new dictionary.
+        Filters the map_data based on the provided bounds and returns a new dictionary, consisting of 1000 enteries.
 
         Arguments:
         bounds (tuple): A tuple with values (left, bottom, right, top).
         map_data (list): A list of dictionaries containing map data.
+        page (int): which segment of data to return.
 
         Returns:
         dict: A new dictionary with filtered coordinates, data sorted by place and resolution in meeters.
+        -1: if page number is invalid
         """
 
-        map_data = self.mapdb.find({})
+        map_data= list(self.mapdb.find({}))
+        if len(res) < self.page_size * page:
+            return -1
+        if len(res) < self.page_size * (page + 1):
+            map_data = res[self.page_size * page:]
+        else:
+            map_data = res[self.page_size * page:self.page_size * (page+1)]
         res = []
 
         for item in map_data:
@@ -84,6 +95,7 @@ class Mongo:
                     'data': item['data']['crime_level'],
                     'resolution': item['resolution']
                 })
+
         return res
     
     async def test(self):
@@ -97,7 +109,7 @@ if __name__ == "__main__":
     m = Mongo()
     m.test()
 
-    grid = create_grid(Segment([Point(-77.3, 39.1), Point(-76.7, 38.6), Point(-76.7, 39.1), Point(-77.3, 38.6)]), 1000)
+    grid = create_grid(Segment([Point(-76.7, 39.1), Point(-76.2, 38.6), Point(-76.2, 39.1), Point(-76.7, 38.6)]), 1000)
     print(len(grid.chunks))
     
     # run(load_from_geocode(grid))
@@ -115,5 +127,5 @@ if __name__ == "__main__":
 
     run(load_from_model(grid))
 
-
+    # run(m.post_grid(grid))
     print("Succsesfuly posted data!")

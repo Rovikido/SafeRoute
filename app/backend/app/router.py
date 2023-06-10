@@ -19,8 +19,8 @@ async def ping():
 async def ping_db():
     return await mongo_client.test()
 
-@router.get("/db/get_data_from_bounds=l:{l},b:{b},r:{r},t:{t}")
-async def get_data_from_bounds(l: float, b: float, r: float, t: float):
+@router.get("/db/get_data_from_bounds=l:{l},b:{b},r:{r},t:{t},page:{page}")
+async def get_data_from_bounds(l: float, b: float, r: float, t: float, page: int):
     """
     Retrieve map data within the specified bounds.
 
@@ -29,6 +29,7 @@ async def get_data_from_bounds(l: float, b: float, r: float, t: float):
     - b (float): The bottom boundary value.
     - r (float): The right boundary value.
     - t (float): The top boundary value.
+    - page (int): page number.
 
     Returns:
     - json: A json containing the result of the query.
@@ -42,5 +43,7 @@ async def get_data_from_bounds(l: float, b: float, r: float, t: float):
         bounds[3] - bounds[1] < 0
         ):
         raise HTTPException(status_code=400, detail="Invalid bounds")
-    res = await mongo_client.get_in_bounds(bounds)
+    res = await mongo_client.get_in_bounds(bounds, page)
+    if res == -1:
+        return []
     return res

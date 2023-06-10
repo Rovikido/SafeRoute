@@ -3,14 +3,26 @@ const { hexToRgb } = require("@mui/material");
 
 export async function fetchData(l, b, r, t) {
   try {
-    const response = await fetch(`https://oexjdd5nwohwxdgrrbfosq6bie0zwiky.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
-    const data = await response.json();
-    return data;
+    const full_response = [];
+    for(let page = 0; true; page++) {
+      const response = await fetch(`https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t},page:${page}`);
+      const data = await response.json();
+      if (response.status === 400) {
+        throw new Error('Bad request');
+      }
+      full_response.push(...data);
+      if (!data.length) {
+        break;
+      }
+    }
+
+    return full_response;
   } catch (error) {
     console.error('Error fetching data: ', error);
     throw error;
   }
 }
+
 
 function getMinMaxValues(data) {
   let minValue = Number.MAX_VALUE;
