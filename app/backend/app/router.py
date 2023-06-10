@@ -15,6 +15,10 @@ async def startup_event():
 async def ping():
     return {"Success": True}
 
+@router.get("/db/")
+async def ping_db():
+    return await mongo_client.test()
+
 @router.get("/db/get_data_from_bounds=l:{l},b:{b},r:{r},t:{t}")
 async def get_data_from_bounds(l: float, b: float, r: float, t: float):
     """

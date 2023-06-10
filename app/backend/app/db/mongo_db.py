@@ -96,20 +96,24 @@ class Mongo:
 if __name__ == "__main__":
     m = Mongo()
     m.test()
-    m.mapdb.delete_many({})
 
-    grid = create_grid(Segment([Point(-77.2, 39.1), Point(-76.8, 38.7), Point(-76.8, 39.1), Point(-77.2, 38.7)]), 1000)
+    grid = create_grid(Segment([Point(-77.3, 39.1), Point(-76.7, 38.6), Point(-76.7, 39.1), Point(-77.3, 38.6)]), 1000)
     print(len(grid.chunks))
-    run(load_from_geocode(grid))
+    
+    # run(load_from_geocode(grid))
     run(load_from_worldpop(grid))
+    print(min([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
+    print(max([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
+    print(grid.data_bounds['pop_count_adj'])
     print("Loading succsesful!")
-
     grid.remove_missing_values()
     grid.normalize_data()
     print("Normalization succsesful!")
+    print(min([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
+    print(max([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
+    print(grid.data_bounds['pop_count_adj'])
 
     run(load_from_model(grid))
 
 
-    run(m.post_grid(grid))
     print("Succsesfuly posted data!")

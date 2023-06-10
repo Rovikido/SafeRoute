@@ -56,6 +56,9 @@ class Segment:
     def get_feature(self):
         return geojson.Feature(geometry=self.get_polygon())
     
+    def __str__(self) -> str:
+        return f'Segment with Center:({self.center}), data:({self.data})'
+    
     async def to_json(self):
         res = {'cords': {'center': {'lon': self.center.x, 'lat': self.center.y}, 
                          'vert': [{'lon': p.x, 'lat': p.y} for p in self.points]},
@@ -86,14 +89,10 @@ class Grid:
         
         num_chunks_x = math.floor((max_x - min_x) / resolution)
         num_chunks_y = math.floor((max_y - min_y) / resolution)
-        # print(f'ncx:{num_chunks_x}, ncy:{num_chunks_y}, x-x:{(max_x - min_x)}, y-y:{(max_y - min_y)}, res:{resolution}')
-
-        # chunks_len = []
         chunks = []
         for i in range(num_chunks_x):
             sub_chunks = []
             for j in range(num_chunks_y):
-                #RETEST WITH NEW CALCULATION
                 chunk_min_x = min_x + (i * resolution)
                 chunk_max_x = chunk_min_x + resolution
                 chunk_min_y = min_y + (j * resolution)
@@ -106,14 +105,11 @@ class Grid:
                     Point(chunk_min_x, chunk_max_y)
                 ], resolution=resolution)
 
-                # if self.seg.point_in_segment(chunk.center):
                 sub_chunks.append(chunk)
             chunks += sub_chunks
             self.shape = [len(sub_chunks), 0]
-            # chunks_len.append(len(sub_chunks))
         self.shape[1] = int(self.shape[0])
         self.chunks = chunks
-        # print([[0, chunks[i].center.y] for i in range(self.shape[0])])
         return chunks
 
     def get_centers(self):

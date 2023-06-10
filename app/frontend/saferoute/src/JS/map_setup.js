@@ -152,7 +152,7 @@ export const defaultOptions = {
     restriction: {
       latLngBounds: {
         north: 41.3,
-        south: 38,
+        south: 35,
         east: -72,
         west: -78,
       }

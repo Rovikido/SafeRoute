@@ -26,7 +26,7 @@ class Mongo:
         dict: A new dictionary with filtered coordinates, data sorted by place and resolution in meeters.
         """
 
-        map_data = self.mapdb.find({})
+        map_data = self.mapdb.find({})[:2000]
         res = []
 
         for item in map_data:

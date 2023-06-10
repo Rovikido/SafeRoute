@@ -1,52 +1,76 @@
+import chroma from 'chroma-js';
 const { hexToRgb } = require("@mui/material");
 
 export async function fetchData(l, b, r, t) {
-    console.log(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
   try {
-    var response = await fetch(`https://gbwulhh6jwf2brpn5iwedaj67m0uvyuo.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
-    var res = JSON.parse(response);
-    console.log(res);
-    return res;
+    const response = await fetch(`https://oexjdd5nwohwxdgrrbfosq6bie0zwiky.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t}`);
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error fetching data: ', error);
     throw error;
   }
 }
 
-export async function to_heatmap_data(l, b, r, t, opc = 0.6) {
-  var data = await fetchData(l, b, r, t);
-
-  var heatmapDataByResolution = {};
+function getMinMaxValues(data) {
+  let minValue = Number.MAX_VALUE;
+  let maxValue = Number.MIN_VALUE;
 
   for (let entry of data) {
-    if (!heatmapDataByResolution.hasOwnProperty(entry.resolution)) {
-      heatmapDataByResolution[entry.resolution] = { positions: [] };
+    if (entry.data < minValue) {
+      minValue = entry.data;
     }
-
-    heatmapDataByResolution[entry.resolution].positions.push({
-      lat: entry.center.lat,
-      lng: entry.center.lon,
-    });
+    if (entry.data > maxValue) {
+      maxValue = entry.data;
+    }
   }
 
-  var heatmaps = [];
+  return { min: minValue, max: maxValue };
+}
 
-  Object.entries(heatmapDataByResolution).forEach(([key, value]) => {
-    var res = {
-      positions: [],
+
+function calculateFillColor(value, minValue, maxValue) {
+  const colorScale = chroma.scale(['green', 'yellow', 'red']).domain([minValue, maxValue]);
+  return colorScale(value).hex();
+}
+
+export async function to_heatmap_data(l, b, r, t, opc = 0.3) {
+  const data = await fetchData(l, b, r, t);
+  console.log('Fetched data:', data);
+
+  // Calculate the minimum and maximum values from the data array
+  const { min, max } = getMinMaxValues(data);
+
+  const heatmaps = [];
+
+  for (let entry of data) {
+    let squareSize = entry.resolution;
+    const squareBounds = [
+      { lat: entry.center.lat + squareSize / 2, lng: entry.center.lon + squareSize / 2 },
+      { lat: entry.center.lat + squareSize / 2, lng: entry.center.lon - squareSize / 2 },
+      { lat: entry.center.lat - squareSize / 2, lng: entry.center.lon - squareSize / 2 },
+      { lat: entry.center.lat - squareSize / 2, lng: entry.center.lon + squareSize / 2 },
+    ];
+
+    const squareOptions = {
+      paths: squareBounds,
       options: {
-        radius: (parseInt(key) / 1000) * 20,
-        opacity: opc,
-        dissipating: false
+        fillColor: calculateFillColor(entry.data, min, max),
+        fillOpacity: opc,
+        strokeColor: calculateFillColor(entry.data, min, max),
+        strokeOpacity: opc - 0.2,
+        strokeWeight: 0,
+        clickable: false,
+        draggable: false,
+        editable: false,
+        geodesic: false,
+        zIndex: 1
       },
     };
 
-    for (let pos of value.positions) {
-      res.positions.push(pos);
-    }
+    heatmaps.push(squareOptions);
+  }
 
-    heatmaps.push(res);
-  });
-
+  console.log(heatmaps);
   return heatmaps;
 }

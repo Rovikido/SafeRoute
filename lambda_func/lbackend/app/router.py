@@ -3,17 +3,15 @@ from fastapi import APIRouter, HTTPException
 
 
 router = APIRouter()
-mongo_client = None
-
-@router.on_event("startup")
-async def startup_event():
-    global mongo_client
-    mongo_client = Mongo()
-    await mongo_client.test()
 
 @router.get("/")
 async def ping():
     return {"Success": True}
+
+@router.get("/db/")
+async def ping_db():
+    mongo_client = Mongo()
+    return await mongo_client.test()
 
 @router.get("/db/get_data_from_bounds=l:{l},b:{b},r:{r},t:{t}")
 async def get_data_from_bounds(l: float, b: float, r: float, t: float):
@@ -32,9 +30,7 @@ async def get_data_from_bounds(l: float, b: float, r: float, t: float):
     Raises:
     - HTTPException(400): If the bounds are invalid.
     """
-    global mongo_client
-    if not mongo_client:
-        mongo_client = Mongo()
+    mongo_client = Mongo()
     bounds = (l, b, r, t)
     if (len(bounds) != 4 or
         bounds[2] - bounds[0] < 0 or 
