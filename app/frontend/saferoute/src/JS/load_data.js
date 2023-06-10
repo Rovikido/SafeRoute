@@ -1,19 +1,44 @@
 import chroma from 'chroma-js';
-const { hexToRgb } = require("@mui/material");
+
 
 export async function fetchData(l, b, r, t) {
   try {
     const full_response = [];
-    for(let page = 0; true; page++) {
+    const concurrencyLimit = 10;
+    let page = 0;
+    let activeRequests = 0;
+    let finished = false;
+
+    const checkPage = async () => {
+      if (finished) {
+        return;
+      }
+
+      activeRequests++;
       const response = await fetch(`https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t},page:${page}`);
       const data = await response.json();
+
       if (response.status === 400) {
         throw new Error('Bad request');
       }
+
       full_response.push(...data);
+
       if (!data.length) {
-        break;
+        finished = true;
       }
+
+      activeRequests--;
+    };
+
+    while (!finished) {
+      const requests = [];
+      for (let i = 0; i < concurrencyLimit; i++) {
+        requests.push(checkPage());
+        page++;
+      }
+
+      await Promise.all(requests);
     }
 
     return full_response;
@@ -42,7 +67,7 @@ function getMinMaxValues(data) {
 
 
 function calculateFillColor(value, minValue, maxValue) {
-  const colorScale = chroma.scale(['green', 'yellow', 'red']).domain([minValue, maxValue]);
+  const colorScale = chroma.scale(['green', 'yellow', 'red']).domain([minValue, maxValue+0.0005]);
   return colorScale(value).hex();
 }
 
