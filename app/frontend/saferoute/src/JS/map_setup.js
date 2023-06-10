@@ -143,21 +143,22 @@ export const mapContainerStyle = {
 };
   
 export const defaultCenter = {
-    lat: 40.7,
-    lng: -74
+    lat: 38.9,
+    lng: -77.05
 };
 
 export const defaultOptions = {
     disableDefaultUI: true,
     restriction: {
       latLngBounds: {
-        north: 39.3,
-        south: 38.3,
-        east: -76.3,
-        west: -77.7,
+        north: 39.2,
+        south: 38.55,
+        east: -76.4,
+        west: -77.6,
       }
     },
     gestureHandling: 'greedy',
+    minZoom: 11,
     styles: mapStyle,
     language: 'en'
 };
