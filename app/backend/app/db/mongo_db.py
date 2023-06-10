@@ -54,7 +54,17 @@ class Mongo:
     #     map_data = self.mapdb.find({})
     #     return map_data
 
-    # async def recalculate_grid
+    # async def load_to_grid(self):
+    #     map_data = list(self.mapdb.find({}))
+    #     bounds = {}
+    #     bounds['left'] = min([e['cords']['center']['lon'] for e in map_data])
+    #     bounds['right'] = max([e['cords']['center']['lon'] for e in map_data]) 
+    #     bounds['bottom'] = min([e['cords']['center']['lat'] for e in map_data]) 
+    #     bounds['top'] = max([e['cords']['center']['lat'] for e in map_data]) 
+    #     grid = Grid(Segment([Point(bounds['left'], bounds['top']), Point(bounds['right'], bounds['bottom']), Point(-bounds['right'], bounds['top']), Point(bounds['left'], bounds['bottom'])]))
+    #     grid.resolution = map_data[0]['resolution']
+    #     for e in map_data:
+    #         pass
     
     async def get_in_bounds(self, bounds:tuple, page:int):
         """
@@ -109,7 +119,7 @@ if __name__ == "__main__":
     m = Mongo()
     m.test()
 
-    grid = create_grid(Segment([Point(-76.7, 39.1), Point(-76.2, 38.6), Point(-76.2, 39.1), Point(-76.7, 38.6)]), 1000)
+    grid = create_grid(Segment([Point(-76.7, 39.1), Point(-76.5, 38.6), Point(-76.5, 39.1), Point(-76.7, 38.6)]), 1000)
     print(len(grid.chunks))
     
     # run(load_from_geocode(grid))

@@ -85,7 +85,7 @@ async def load_pops_from_file(grid:Grid):
         results = await asyncio.gather(*tasks)
 
         for i, result in enumerate(results):
-            grid.chunks[i].data['pop_count_adj'] = result
+            grid.chunks[i].raw_data['pop_count_adj'] = result
         grid.data_bounds['pop_count_adj'] = [np.ma.masked_less(image, 0.1).min(), np.max(image)]
 
     except FileNotFoundError as e:

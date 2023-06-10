@@ -27,6 +27,7 @@ class Segment:
     def __init__(self, points = [Point], resolution = -1) -> None:
         self.points = points
         self.center = self.__get_center()
+        self.raw_data = {'pop_count_adj': -1, 'income': -1, 'crime_level': -1}
         self.data = {'pop_count_adj': -1, 'income': -1, 'crime_level': -1}
         self.resolution = resolution
 
@@ -63,6 +64,7 @@ class Segment:
         res = {'cords': {'center': {'lon': self.center.x, 'lat': self.center.y}, 
                          'vert': [{'lon': p.x, 'lat': p.y} for p in self.points]},
                'data': self.data,
+               'raw_data': self.raw_data,
                'resolution': self.resolution}
         return res
         
@@ -136,26 +138,26 @@ class Grid:
 
             for p in prev_iteration: 
                 chunk = self.__get_chunk(p[0] + 1, p[1])
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
+                if chunk and chunk not in used_neighbours and chunk.raw_data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0] + 1, p[1]])
                     used_neighbours.add(chunk)
 
                 chunk = self.__get_chunk(p[0], p[1] - 1)
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
+                if chunk and chunk not in used_neighbours and chunk.raw_data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0], p[1] - 1])
                     used_neighbours.add(chunk)
 
                 chunk = self.__get_chunk(p[0] - 1, p[1])
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
+                if chunk and chunk not in used_neighbours and chunk.raw_data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0] - 1, p[1]])
                     used_neighbours.add(chunk)
 
                 chunk = self.__get_chunk(p[0], p[1] + 1)
-                if chunk and chunk not in used_neighbours and chunk.data[value_key] >= 0:
+                if chunk and chunk not in used_neighbours and chunk.raw_data[value_key] >= 0:
                     temp_prev_neighbours.append([p[0], p[1] + 1])
                     used_neighbours.add(chunk)
             
-            l_res = [self.__get_chunk(n[0], n[1]).data[value_key]  for n in temp_prev_neighbours]
+            l_res = [self.__get_chunk(n[0], n[1]).raw_data[value_key]  for n in temp_prev_neighbours]
             l_res = sum(l_res) / len(l_res) if len(l_res) > 0 else 0
             res += l_res * weights[dp]
             prev_iteration = temp_prev_neighbours
@@ -168,32 +170,32 @@ class Grid:
                 chunk = self.__get_chunk(x, y)
                 if not chunk:
                     continue
-                if chunk.data['pop_count_adj'] < 0:
-                    print(f'Changed value from {chunk.data["pop_count_adj"]}', end='')
+                if chunk.raw_data['pop_count_adj'] < 0:
+                    print(f'Changed value from {chunk.raw_data["pop_count_adj"]}', end='')
                     self.__remove_missing_value(x, y, 'pop_count_adj', depth=depth-1)
-                    print(f" to {chunk.data['pop_count_adj']}")
-                if chunk.data['income'] <= 0:
+                    print(f" to {chunk.raw_data['pop_count_adj']}")
+                if chunk.raw_data['income'] <= 0:
                     self.__remove_missing_value(x, y, 'income', depth=depth+1)
 
     def normalize_data(self):
         # constructing bounds
         for val, bound in self.data_bounds.items(): 
-            if bound or len([c.data[val] for c in self.chunks if c.data[val] != -1]) == 0:
+            if bound or len([c.raw_data[val] for c in self.chunks if c.raw_data[val] != -1]) == 0:
                 continue
-            min_v = min([c.data[val] for c in self.chunks if c.data[val] != -1])
+            min_v = min([c.raw_data[val] for c in self.chunks if c.raw_data[val] != -1])
             res = []
             res.append(min_v if min_v > 0 else 0)
-            res.append(max([c.data[val] for c in self.chunks]))
+            res.append(max([c.raw_data[val] for c in self.chunks]))
             self.data_bounds[val] = res
         
         # normalizing using bounds
         for c in self.chunks:
             if self.data_bounds['pop_count_adj']:
                 # print(c.data['pop_count_adj'])
-                c.data['pop_count_adj'] = (c.data['pop_count_adj'] - self.data_bounds['pop_count_adj'][0]) / self.data_bounds['pop_count_adj'][1]
+                c.data['pop_count_adj'] = (c.raw_data['pop_count_adj'] - self.data_bounds['pop_count_adj'][0]) / self.data_bounds['pop_count_adj'][1]
                 # print((c.data['pop_count_adj'] - self.data_bounds['pop_count_adj'][0]) / self.data_bounds['pop_count_adj'][1])
             if self.data_bounds['income']:
-                c.data['income'] = (c.data['income'] - self.data_bounds['income'][0]) / self.data_bounds['income'][1]
+                c.data['income'] = (c.raw_data['income'] - self.data_bounds['income'][0]) / self.data_bounds['income'][1]
         
         # reset bounds
         for val, _ in self.data_bounds.items(): 

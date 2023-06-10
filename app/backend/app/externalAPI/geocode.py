@@ -31,11 +31,11 @@ class GeocodioRequests:
                         else 0 for i in range(len(result['results']))
                     ]
                     income = sum(list(filter(lambda x: x != 0, income_list))) / len(income_list)
-                    chunk.data['income'] = income
+                    chunk.raw_data['income'] = income
             except aiohttp.ContentTypeError as e:
                 raise Exception(f"{result}\n{e}")
             except KeyError as e:
-                chunk.data['income'] = -1
+                chunk.raw_data['income'] = -1
 
     async def reverse_geocode_async(self, grid: Grid):
         url = "https://api.geocod.io/v1.7/reverse"
