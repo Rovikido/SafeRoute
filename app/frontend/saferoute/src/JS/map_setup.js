@@ -151,10 +151,10 @@ export const defaultOptions = {
     disableDefaultUI: true,
     restriction: {
       latLngBounds: {
-        north: 41.3,
-        south: 35,
-        east: -72,
-        west: -78,
+        north: 39.3,
+        south: 38.3,
+        east: -76.3,
+        west: -77.7,
       }
     },
     gestureHandling: 'greedy',
