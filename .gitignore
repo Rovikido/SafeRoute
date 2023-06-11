@@ -13,7 +13,6 @@ NYPD_Arrests_Data__Historic_.csv
 .tif
 .csv
 .env
-**.png
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
