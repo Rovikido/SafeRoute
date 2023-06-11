@@ -67,11 +67,11 @@ function getMinMaxValues(data) {
 
 
 function calculateFillColor(value, minValue, maxValue) {
-  const colorScale = chroma.scale(['green', 'yellow', 'red']).domain([minValue+0.0001, maxValue]);
+  const colorScale = chroma.scale(['black', 'red']).domain([minValue+0.0001, maxValue]);
   return colorScale(value).hex();
 }
 
-export async function to_heatmap_data(l, b, r, t, opc = 0.25) {
+export async function to_heatmap_data(l, b, r, t, opc = 0.5) {
   const data = await fetchData(l, b, r, t);
   console.log('Fetched data:', data);
 

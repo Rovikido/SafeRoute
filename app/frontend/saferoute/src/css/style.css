@@ -40,6 +40,12 @@
     color: white;
     text-decoration: none;
   }
+
+  nav ul li img {
+    display: block;
+    color: white;
+    text-decoration: none;
+  }
   
   .navHover{
 
@@ -48,3 +54,40 @@
   .navHover:hover {
     background-color: #333;
   } 
+
+  .container {
+    background-color: #223344;
+    color: #fff;
+    padding: 20px;
+  }
+  
+  .container ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .container ul li {
+    display: inline-block;
+  }
+  
+  .section {
+    margin-bottom: 20px;
+  }
+  
+  .section h2 {
+    margin-bottom: 5px;
+  }
+  
+  .section p {
+    margin-top: 0;
+  }
+  
+  .divider {
+    border: none;
+    border-top: 1px solid #fff;
+    margin: 5px 0;
+  }
+  

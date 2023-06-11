@@ -143,7 +143,7 @@ export const mapContainerStyle = {
 };
   
 export const defaultCenter = {
-    lat: 38.9,
+    lat: 38.91,
     lng: -77.05
 };
 
@@ -151,7 +151,7 @@ export const defaultOptions = {
     disableDefaultUI: true,
     restriction: {
       latLngBounds: {
-        north: 39.2,
+        north: 39.13,
         south: 38.55,
         east: -76.4,
         west: -77.6,
