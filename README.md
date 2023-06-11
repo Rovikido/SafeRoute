@@ -1,4 +1,4 @@
-# [SafeRoute (in progress)]https://main.d3d4kky5khtwtb.amplifyapp.com
+# [SafeRoute (in progress)](https://main.d3d4kky5khtwtb.amplifyapp.com)
 
 login: test, password: testtest<br />
 SafeRoute overlays a map with a danger level heatmap based on crime data. <br />
