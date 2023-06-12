@@ -62,6 +62,9 @@ const UsedData = ({ signOut, user }) => {
                 <a href="/map">SAFEROUTE</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
+                    <a href="/map">Map</a>
+                </li>
+                <li className="navHover" style={{ textAlign: 'right' }}>
                     <a className="navHover" href="/about">About</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
