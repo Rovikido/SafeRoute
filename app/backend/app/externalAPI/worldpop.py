@@ -8,21 +8,6 @@ import asyncstdlib
 
 from app.backend.utility.coordinates import Point, Segment, Grid, create_grid
 
-# TODO: refactor this whole file, and remove rednundancy
-class WorldPopRequests:
-    def __init__(self, key=None) -> None:
-        if key is not None:
-            self.api_key = key
-
-    def form_geojson(self, grid:Grid):
-        fc = geojson.FeatureCollection([chunk.get_feature() for chunk in grid.chunks])
-        gjson = geojson.dumps(fc, sort_keys=True)
-        return gjson
-
-    def get_data(self):
-        pass
-        
-
 async def _get_distance(point1, point2):
     x1, y1 = point1
     x2, y2 = point2
