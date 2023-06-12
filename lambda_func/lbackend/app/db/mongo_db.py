@@ -9,7 +9,7 @@ class Mongo:
         self.__uri = self.__load_uri()
         self.client = MongoClient(self.__uri, server_api=ServerApi('1'))
         self.mapdb = self.client.map['map']
-        self.page_size = 1000
+        self.page_size = 500
         self._cr_by_h = self.__get_crimerate_by_hour()
 
     def __load_uri(self) -> str:

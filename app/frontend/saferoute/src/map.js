@@ -4,11 +4,14 @@ import { mapContainerStyle, defaultOptions, defaultCenter, bounds } from './JS/m
 import { to_heatmap_data } from './JS/load_data';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import ReactLoading from 'react-loading';
+import Clock from 'react-live-clock'; 
 import css from './css/style.css';
 import signoutImage from './images/signout.png';
 import logo from './images/logo.png';
+import './css/font.css';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
+
 
 const MapComponent = () => {
   const [map, setMap] = React.useState(null);
@@ -63,6 +66,23 @@ const MapComponent = () => {
           <ReactLoading type="spinningBubbles" color="#eff1f5" height={80} width={80} />
         </div>
       )}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '80px',
+          right: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'transparent',
+          borderRadius: '4px',
+          padding: '4px',
+          fontSize: '36px',
+          color: '#006400'
+        }} className="clock"
+      >
+        <Clock format={'HH:mm'} ticking={true} timezone={'GMT'} />
+      </div>
     </GoogleMap>
   );
 };
