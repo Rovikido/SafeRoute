@@ -10,12 +10,18 @@ class Mongo:
         self.client = MongoClient(self.__uri, server_api=ServerApi('1'))
         self.mapdb = self.client.map['map']
         self.page_size = 1000
+        self._cr_by_h = self.__get_crimerate_by_hour()
 
     def __load_uri(self) -> str:
         load_dotenv()
         return f"mongodb+srv://admin:{os.getenv('MONGODB_URI_PSW')}@srmapcluster.fb8xt9p.mongodb.net/?retryWrites=true&w=majority"
     
-    async def get_in_bounds(self, bounds:tuple, page:int):
+    def __get_crimerate_by_hour(self):
+        cl = [45.3, 37.8, 26.6, 18.6, 15.1, 15.9, 20.2, 28.4, 30.5, 34.6, 38.0, 45.1, 40.0, 43.2, 47.6, 50.9, 54.5, 58.4, 59.1, 61.9, 63.0, 61.0, 54.5, 49.9]
+        avg = sum(cl)/len(cl)
+        return [i/avg for i in cl]
+    
+    async def get_in_bounds(self, bounds:tuple, page:int, time:int=12):
         """
         Filters the map_data based on the provided bounds and returns a new dictionary, consisting of 1000 enteries.
 
@@ -51,7 +57,7 @@ class Mongo:
                 
                 res.append({
                     'center': center,
-                    'data': item['data']['crime_level'],
+                    'data': (item['data']['crime_level'] * self._cr_by_h[time]),
                     'resolution': item['resolution']
                 })
 

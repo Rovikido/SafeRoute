@@ -61,6 +61,9 @@ const UsedData = ({ signOut, user }) => {
                 <li className="navHover" style={{ textAlign: 'right' }}>
                     <a href="/used_data">Used data</a>
                 </li>
+                <li className="navHover" style={{ textAlign: 'right' }}>
+                    <a href="https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/docs" target="_blank">SWAGGER UI</a>
+                </li>
                 <li className="navHover" style={{ textAlign: 'right' }}><img
                     className="navHover"
                     src={signoutImage}
@@ -77,7 +80,7 @@ const UsedData = ({ signOut, user }) => {
         <StyledDataItem>
           <StyledSubContainer>
             <Typography variant="h6" component="h3" color="primary">
-              <StyledLink href="https://hub.worldpop.org/geodata/summary?id=6545">Worldpop</StyledLink>
+              <StyledLink href="https://hub.worldpop.org/geodata/summary?id=6545" target="_blank">Worldpop</StyledLink>
             </Typography>
             <StyledDivider />
             <Typography variant="body1">
@@ -91,7 +94,7 @@ const UsedData = ({ signOut, user }) => {
         <StyledDataItem>
           <StyledSubContainer>
             <Typography variant="h6" component="h3" color="primary">
-              <StyledLink href="https://catalog.data.gov/dataset/nypd-arrests-data-historic">Crime data</StyledLink>
+              <StyledLink href="https://catalog.data.gov/dataset/nypd-arrests-data-historic" target="_blank">Crime data</StyledLink>
             </Typography>
             <StyledDivider />
             <Typography variant="body1">
@@ -107,7 +110,7 @@ const UsedData = ({ signOut, user }) => {
         <StyledDataItem>
           <StyledSubContainer>
             <Typography variant="h6" component="h3" color="primary">
-              <StyledLink href="https://data.census.gov/table?q=b19013&g=040XX00US50$0600000&tid=ACSDT5Y2021.B19013&tp=true">Income data</StyledLink>
+              <StyledLink href="https://data.census.gov/table?q=b19013&g=040XX00US50$0600000&tid=ACSDT5Y2021.B19013&tp=true" target="_blank">Income data</StyledLink>
             </Typography>
             <StyledDivider />
             <Typography variant="body1">

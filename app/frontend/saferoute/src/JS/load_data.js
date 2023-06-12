@@ -9,13 +9,15 @@ export async function fetchData(l, b, r, t) {
     let activeRequests = 0;
     let finished = false;
 
+    const currentDate = new Date();
+
     const checkPage = async () => {
       if (finished) {
         return;
       }
 
       activeRequests++;
-      const response = await fetch(`https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds=l:${l},b:${b},r:${r},t:${t},page:${page}`);
+      const response = await fetch(`https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds?l=${l}&b=${b}&r=${r}&t=${t}&page=${page}&time=${currentDate.getHours()}`);
       const data = await response.json();
 
       if (response.status === 400) {

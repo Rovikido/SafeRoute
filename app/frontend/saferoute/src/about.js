@@ -56,10 +56,10 @@ const UsedData = ({ signOut, user }) => {
         <nav>
             <ul>
                 <li style={{ textAlign: 'left', float: 'left' }}>
-                <a href="/map"><img src={logo} style={{width: '24px', height: '24px'}} /></a>
+                  <a href="/map"><img src={logo} style={{width: '24px', height: '24px'}} /></a>
                 </li>
                 <li style={{ textAlign: 'left', float: 'left', transform: 'translateX(-20%)' }}>
-                <a href="/map">SAFEROUTE</a>
+                  <a href="/map">SAFEROUTE</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
                     <a href="/map">Map</a>
@@ -69,6 +69,9 @@ const UsedData = ({ signOut, user }) => {
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
                     <a href="/used_data">Used data</a>
+                </li>
+                <li className="navHover" style={{ textAlign: 'right' }}>
+                    <a href="https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/docs" target="_blank">SWAGGER UI</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}><img
                     className="navHover"

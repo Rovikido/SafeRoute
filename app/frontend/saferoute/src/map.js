@@ -25,10 +25,10 @@ const MapComponent = () => {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true); // Set loading state to true before fetching data
+      setIsLoading(true);
       const heatmapData = await to_heatmap_data(bounds.west, bounds.south, bounds.east, bounds.north);
       setHeatmaps(heatmapData);
-      setIsLoading(false); // Set loading state to false after fetching data
+      setIsLoading(false);
     };
     fetchData();
   }, []);
@@ -90,6 +90,9 @@ const Map = ({ signOut, user }) => {
             </li>
             <li className="navHover" style={{ textAlign: 'right' }}>
               <a href="/used_data">Used data</a>
+            </li>
+            <li className="navHover" style={{ textAlign: 'right' }}>
+              <a href="https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/docs" target="_blank">SWAGGER UI</a>
             </li>
             <li className="navHover" style={{ textAlign: 'right' }}><img
                 className="navHover"
