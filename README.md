@@ -36,6 +36,54 @@ The backend precomputes map data, and writes it to the MongoDB. This data can th
 * [Docker](https://www.docker.com/) - platform that allows automatic the deployment of applications inside containers, providing an efficient and consistent environment for running applications.
 * [React](https://reactjs.org/) - JavaScript library for building user interfaces.
 
+## Decomposition of tasks
+### ML
+* ✅ Collect income, population and crime data for model
+* ✅ Train model
+* ✅ Enable model to work on new data
+* ✅/🔳 Find reliable datasource to fill the whole map
+
+### Frontend
+* ✅ Map
+* ✅ Heatmap
+* ✅ User registration and login
+* ✅ User profile
+* 🔳 Landing page
+* 🔳 Beautiful site design
+
+### DB
+* ✅ Create Database
+* ✅ Connect Database
+* ✅ Create in-app interface to interact with DB
+
+### API
+* ✅ Data request API
+
+### Authorization
+* ✅ Create Login page
+* ✅ Connect login page to AWS
+* ✅ Connect login page to Google auth
+
+### Algorithm
+* ✅ Neural Network
+* ✅ Clustering
+* ✅ Data export to API
+
+### Loggs
+* ✅ Add logs for API
+* 🔳 Add logs for Main app
+
+### Tests
+* ✅ testing algorithm
+* 🔳 Postman
+
+### AWS
+* ✅ Deploy the project
+* ✅ Deploy the API
+
+### Git
+* ✅ Add README on GIT
+
 ## Contacts:
 * [Telegram](https://t.me/rovikido) 
 * Email: oleksandr.zakala@gmail.com
