@@ -19,8 +19,8 @@ function App({ signOut, user }) {
             <Routes>
               <Route path="/" element={<Map />} />
               <Route path="/map/*" element={<Map />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/used_data" element={<UsedData />} />
+              <Route path="/about/*" element={<About />} />
+              <Route path="/used_data/*" element={<UsedData />} />
             </Routes>
         </Router>
       </ThemeProvider>
