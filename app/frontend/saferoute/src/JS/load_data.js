@@ -17,6 +17,7 @@ export async function fetchData(l, b, r, t) {
       }
 
       activeRequests++;
+      console.log(currentDate.getHours())
       const response = await fetch(`https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/db/get_data_from_bounds?l=${l}&b=${b}&r=${r}&t=${t}&page=${page}&time=${currentDate.getHours()}`);
       const data = await response.json();
 
