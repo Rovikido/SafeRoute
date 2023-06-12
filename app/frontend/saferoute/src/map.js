@@ -6,6 +6,7 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import ReactLoading from 'react-loading';
 import css from './css/style.css';
 import signoutImage from './images/signout.png';
+import logo from './images/logo.png';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -41,14 +42,9 @@ const MapComponent = () => {
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      {/* Add Polygon components for each square */}
       {heatmaps.map((squareOptions, index) => (
         <Polygon key={index} {...squareOptions} />
       ))}
-      {/* Add any additional components, like markers, here */}
-      {/* <Marker position={defaultCenter} /> */}
-
-      {/* Render the loading screen */}
       {isLoading && (
         <div
           style={{
@@ -81,6 +77,9 @@ const Map = ({ signOut, user }) => {
         <nav>
           <ul>
             <li style={{ textAlign: 'left', float: 'left' }}>
+              <a href="/map"><img src={logo} style={{width: '24px', height: '24x'}} /></a>
+            </li>
+            <li style={{ textAlign: 'left', float: 'left', transform: 'translateX(-20%)' }}>
               <a href="/map">SAFEROUTE</a>
             </li>
             <li className="navHover" style={{ textAlign: 'right' }}>

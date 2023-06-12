@@ -9,6 +9,7 @@ import { withAuthenticator, ThemeProvider, Theme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css'; 
 import './css/login.css'
 
+
 Amplify.configure(awsConfig);
 
 

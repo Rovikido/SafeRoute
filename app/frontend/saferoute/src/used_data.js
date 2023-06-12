@@ -3,6 +3,7 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Container, Typography, Link, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import signoutImage from './images/signout.png';
+import logo from './images/logo.png';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   backgroundColor: '#3d4d5c',
@@ -46,7 +47,10 @@ const UsedData = ({ signOut, user }) => {
         <nav>
             <ul>
                 <li style={{ textAlign: 'left', float: 'left' }}>
-                    <a href="/map">SAFEROUTE</a>
+                <a href="/map"><img src={logo} style={{width: '24px', height: '24px'}} /></a>
+                </li>
+                <li style={{ textAlign: 'left', float: 'left', transform: 'translateX(-20%)' }}>
+                <a href="/map">SAFEROUTE</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
                     <a href="/map">Map</a>
