@@ -55,16 +55,16 @@ const UsedData = ({ signOut, user }) => {
         <nav>
             <ul>
                 <li style={{ textAlign: 'left', float: 'left' }}>
-                    <a href="./map">SAFEROUTE</a>
+                    <a href="/map">SAFEROUTE</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
-                    <a href="./map">Map</a>
+                    <a href="/map">Map</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
-                    <a className="navHover" href="./about">About</a>
+                    <a className="navHover" href="/about">About</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}>
-                    <a href="./used_data">Used data</a>
+                    <a href="/used_data">Used data</a>
                 </li>
                 <li className="navHover" style={{ textAlign: 'right' }}><img
                     className="navHover"
