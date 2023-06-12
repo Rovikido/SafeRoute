@@ -111,7 +111,7 @@ const UsedData = ({ signOut, user }) => {
             </Typography>
             <StyledDivider />
             <Typography variant="body1">
-            Original data came from here, but project used GEOODIO to retrieve info from this table.
+            Original data came from here, but project used GEOCODIO to retrieve info from this table.
             </Typography>
           </StyledSubContainer>
         </StyledDataItem>
