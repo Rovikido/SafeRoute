@@ -75,7 +75,7 @@ The backend precomputes map data, and writes it to the MongoDB. This data can th
 
 ### Tests
 * ✅/🔳 testing algorithm
-* 🔳 Postman
+* ✅ Postman
 
 ### AWS
 * ✅ Deploy the project
