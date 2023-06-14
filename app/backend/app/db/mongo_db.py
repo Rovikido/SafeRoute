@@ -130,15 +130,11 @@ if __name__ == "__main__":
     
     # run(load_from_geocode(grid))
     run(load_from_worldpop(grid))
-    print(min([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
-    print(max([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
     print(grid.data_bounds['pop_count_adj'])
     print("Loading succsesful!")
     grid.remove_missing_values()
     grid.normalize_data()
     print("Normalization succsesful!")
-    print(min([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
-    print(max([grid.chunks[i].data['pop_count_adj'] for i in range(len(grid.chunks))]))
     print(grid.data_bounds['pop_count_adj'])
 
     run(load_from_model(grid))
