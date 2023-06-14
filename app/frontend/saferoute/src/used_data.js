@@ -1,81 +1,17 @@
 import React from 'react';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Container, Typography, Link, Divider } from '@mui/material';
-import { styled } from '@mui/system';
+import {Header, StyledContainer, StyledSubContainer, StyledDataItem, StyledDivider, StyledLink} from './JS/ui_components';
 import signoutImage from './images/signout.png';
 import logo from './images/logo.png';
 
-const StyledContainer = styled(Container)(({ theme }) => ({
-  backgroundColor: '#3d4d5c',
-  color: '#e6e6e6',
-  padding: theme.spacing(2),
-  borderRadius: theme.spacing(1),
-  marginTop: '50px'
-}));
-
-const StyledSubContainer = styled('div')(({ theme }) => ({
-  backgroundColor: '#1c2833',
-  padding: theme.spacing(2),
-  borderRadius: theme.spacing(1),
-}));
-
-const StyledDataItem = styled('div')(({ theme }) => ({
-  marginBottom: theme.spacing(4),
-  marginTop: theme.spacing(2),
-}));
-
-const StyledDivider = styled(Divider)({
-  width: '100%',
-  height: '2px',
-  backgroundColor: '#e6e6e6',
-  marginBottom: '10px'
-});
-
-const StyledLink = styled(Link)({
-    color: '#e6e6e6',
-    textDecoration: 'none',
-    '&:hover': {
-      color: '#90a7d5',
-    },
-  });
-  
 
 const UsedData = ({ signOut, user }) => {
   return (
     <>
-      <header>
-        <nav>
-            <ul>
-                <li style={{ textAlign: 'left', float: 'left' }}>
-                <a href="/map"><img src={logo} style={{width: '24px', height: '24px'}} /></a>
-                </li>
-                <li style={{ textAlign: 'left', float: 'left', transform: 'translateX(-20%)' }}>
-                <a href="/map">SAFEROUTE</a>
-                </li>
-                <li className="navHover" style={{ textAlign: 'right' }}>
-                    <a href="/map">Map</a>
-                </li>
-                <li className="navHover" style={{ textAlign: 'right' }}>
-                    <a className="navHover" href="/about">About</a>
-                </li>
-                <li className="navHover" style={{ textAlign: 'right' }}>
-                    <a href="/used_data">Used data</a>
-                </li>
-                <li className="navHover" style={{ textAlign: 'right' }}>
-                    <a href="https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/docs" target="_blank">SWAGGER UI</a>
-                </li>
-                <li className="navHover" style={{ textAlign: 'right' }}><img
-                    className="navHover"
-                    src={signoutImage}
-                    alt="Signout"
-                    onClick={signOut} 
-                    style={{ textAlign: 'right', cursor: 'pointer', width: '20px', height: '20px', transform: 'translateY(20%)'}}
-                    />
-                </li>
-            </ul>
-        </nav>
-    </header>
-
+      <Header>
+        
+      </Header>
       <StyledContainer>
         <StyledDataItem>
           <StyledSubContainer>

@@ -1,93 +1,51 @@
-  html,
-  body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-y: hidden;
-  }
-  
-  .map {
-    height: 100%;
-    overflow-y: hidden;
-  }
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
 
-  header {
-    background-color: black;
-    padding: 0; 
-    margin:0;
-  }
-  
-  nav ul {
-    margin-right: 20px;
-    margin-top: 0px;
-    margin-bottom: 0px; 
-    padding: 0;
-    list-style: none;
-    text-align: right;
-  }
-  
-  nav ul li {
-    display: inline-block;
-  }
-  
-  nav ul li:last-child {
-    margin-right: 0;
-  }
-  
-  nav ul li a {
-    display: block;
-    padding: 20px;
-    color: white;
-    text-decoration: none;
-  }
+header {
+  background-color: black;
+  padding: 0; 
+  margin:0;
+}
 
-  nav ul li img {
-    display: block;
-    color: white;
-    text-decoration: none;
-  }
-  
-  .navHover{
+nav ul {
+  margin-right: 20px;
+  margin-top: 0px;
+  margin-bottom: 0px; 
+  padding: 0;
+  list-style: none;
+  text-align: right;
+}
 
-  }
+nav ul li {
+  display: inline-block;
+}
 
-  .navHover:hover {
-    background-color: #333;
-  } 
+nav ul li:last-child {
+  margin-right: 0;
+}
 
-  .container {
-    background-color: #223344;
-    color: #fff;
-    padding: 20px;
-  }
-  
-  .container ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .container ul li {
-    display: inline-block;
-  }
-  
-  .section {
-    margin-bottom: 20px;
-  }
-  
-  .section h2 {
-    margin-bottom: 5px;
-  }
-  
-  .section p {
-    margin-top: 0;
-  }
-  
-  .divider {
-    border: none;
-    border-top: 1px solid #fff;
-    margin: 5px 0;
-  }
-  
+nav ul li a {
+  display: block;
+  padding: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+nav ul li img {
+  display: block;
+  color: white;
+  text-decoration: none;
+}
+
+.navHover{
+
+}
+
+.navHover:hover {
+  background-color: #333;
+} 
