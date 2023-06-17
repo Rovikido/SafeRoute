@@ -11,11 +11,20 @@
   --amplify-colors-brand-primary-60: #000000;
   --amplify-colors-brand-primary-80: #5e6ea1;
   --amplify-colors-brand-primary-90: #7e8bb4;
-  --amplify-colors-brand-primary-100: #9fa8c6;
+  --amplify-colors-brand-primary-100: #808bb3;
   --amplify-colors-font-interactive:  #949cb8;
   --amplify-components-tabs-item-active-color: #cccccc;
   --amplify-components-tabs-item-focus-color: #838eaf;
-  --amplify-components-tabs-item-hover-color: #ff8800;
+  --amplify-components-tabs-item-hover-color: #f2f2f2;
+  --amplify-components-autocomplete-menu-border-radius: 150px;
+  --amplify-components-button-border-radius: 150px; /*signin button*/
+  --amplify-components-badge-border-radius: 150px; /*sign in with gooogle */
+  --amplify-components-fieldcontrol-border-radius: 150px; /*value has to be the same as autocomplete-menu */
   background-image: url('../images/background.jpg');
   background-size: cover;
+  border-radius: 10px;
 }
+
+/* [data-amplify-router]{
+  border-radius: 25px;
+} */
