@@ -10,7 +10,7 @@ import logo from './images/logo.png';
 const UsedData = ({ signOut, user }) => {
   return (
     <StyledBackground>
-      <Header>
+      <Header signOut={signOut}>
         
       </Header>
       <div>

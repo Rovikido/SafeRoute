@@ -1,7 +1,7 @@
 import React from 'react';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Container, Typography, Link, Divider } from '@mui/material';
-import {Header, StyledContainer, StyledSubContainer, StyledDataItem, StyledDivider, StyledLink} from './JS/ui_components';
+import { Header, StyledContainer, StyledSubContainer, StyledDataItem, StyledDivider, StyledLink } from './JS/ui_components';
 import signoutImage from './images/signout.png';
 import logo from './images/logo.png';
 
@@ -9,9 +9,7 @@ import logo from './images/logo.png';
 const UsedData = ({ signOut, user }) => {
   return (
     <>
-      <Header>
-        
-      </Header>
+      <Header signOut={signOut}></Header>
       <StyledContainer>
         <StyledDataItem>
           <StyledSubContainer>

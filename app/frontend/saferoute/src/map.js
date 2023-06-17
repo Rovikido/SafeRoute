@@ -59,7 +59,7 @@ const MapComponent = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            zIndex: 9999,
+            zIndex: 1,
           }}
         >
           <ReactLoading type="spinningBubbles" color="#eff1f5" height={80} width={80} />
@@ -75,7 +75,8 @@ const Map = ({ signOut, user }) => {
   const isLoaded = !!API_KEY;
   return (
     <div>
-      <Header>
+      <Header signOut={signOut}>
+        
       </Header>
       {isLoaded ? (
         <LoadScript googleMapsApiKey={API_KEY} language="en"  libraries={['visualization']}>
