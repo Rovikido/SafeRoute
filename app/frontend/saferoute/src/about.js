@@ -7,7 +7,7 @@ import signoutImage from './images/signout.png';
 import logo from './images/logo.png';
 
 
-const UsedData = ({ signOut, user }) => {
+const About = ({ signOut, user }) => {
   return (
     <StyledBackground>
       <Header signOut={signOut}>
@@ -90,6 +90,4 @@ const UsedData = ({ signOut, user }) => {
   );
 };
 
-export default withAuthenticator(UsedData, {
-  socialProviders: ['google'],
-});
+export default About

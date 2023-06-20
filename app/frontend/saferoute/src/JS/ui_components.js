@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { Amplify } from '@aws-amplify/core';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Menu, Container, Link, Divider, Grid, IconButton } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { styled } from '@mui/system';
+import { useLogin } from '../LoginButton';
 
 import signoutImage from '../images/signout.png';
 import settingsImage from '../images/settings.png';
@@ -72,13 +74,14 @@ const NavLink = styled(Link)({
   textDecoration: 'none',
   fontSize: '20px',
   borderRadius: '5px',
+  transition: 'background-color 0.175s ease',
   '&:hover': {
     backgroundColor: '#333',
   },
 });
 
 const CustomNavLink = styled(NavLink)({
-  padding: '16px', // Custom padding value to override the default padding
+  padding: '16px', 
 });
 
 const LogoContainer = styled('div')({
@@ -92,48 +95,135 @@ const StyledMenu = styled(Menu)({
     backgroundColor: '#1a1a1a',
     borderRadius: '16px',
     zIndex: 10,
+    overflow: 'hidden',
   },
 });
 
 const StyledMenuItem = styled(MenuItem)({
-  padding: '20px',
+  padding: '25px',
   color: '#e6e6e6',
   textDecoration: 'none',
   fontSize: '18px',
-  borderRadius: '5px',
+  transition: 'background-color 0.175s ease',
   '&:hover': {
     backgroundColor: '#333',
   },
 });
 
-const DropDownMenu = ({ signOut }) => {
+const StyledMenuText = styled(MenuItem)({
+  padding: '25px',
+  color: '#a6a6a6',
+  textDecoration: 'none',
+  fontSize: '18px',
+  borderRadius: '5px',
+  pointerEvents: 'none',
+  textTransform: 'uppercase',
+});
+
+
+
+const checkInitialAuthState = async () => {
+  try {
+    const user = await Amplify.Auth.currentAuthenticatedUser();
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+const signOutUser = async () => {
+  try {
+    await Amplify.Auth.signOut();
+  } catch (error) {
+    console.log(`Error signing out. \n${error}`);
+  }
+};
+
+const getUsername = async () => {
+  try {
+    const user = await Amplify.Auth.currentAuthenticatedUser();
+    const username = user.username;
+    return username;
+  } catch (error) {
+    return 'no-user';
+  }
+};
+
+const DropDownMenu = ({ signIn }) => {
   const navigate = useNavigate();
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [username, setUsername] = useState(null);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const fetchedUsername = await getUsername();
+      setUsername(fetchedUsername);
+    };
+
+    fetchUsername();
+  }, []);
+
+  useEffect(() => {
+    const checkAuthState = async () => {
+      const isAuthenticated = await checkInitialAuthState();
+      setLoggedIn(isAuthenticated);
+    };
+
+    checkAuthState();
+  }, []);
 
   const handleAccountClick = () => {
     navigate('/profile');
   };
 
-  const handleSignOutClick = () => {
-    signOut();
+  const handleSignOutClick = async () => {
+    await signOutUser();
+    setLoggedIn(false);
+    window.location.reload(false);
+  };
+
+  const handleSignInClick = () => {
+    signIn();
   };
 
   return (
     <PopupState variant="popover">
       {(popupState) => (
         <React.Fragment>
-          <IconButton {...bindTrigger(popupState)}>
-            <img src={profileImage} width='28px' height='28px' />
-          </IconButton>
+          <CustomNavLink {...bindTrigger(popupState)}>
+            <IconButton style={{ pointerEvents: 'none'}}>
+              <img src={profileImage} width='28px' height='28px' />
+            </IconButton>
+          </CustomNavLink>
           <StyledMenu {...bindMenu(popupState)}>
-            <StyledMenuItem onClick={handleAccountClick}>
+            {/* <StyledMenuItem onClick={handleAccountClick}>
               <img src={settingsImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
               <span>Account</span>
-            </StyledMenuItem>
-            <Divider style={{width: '100%', height: '2px', backgroundColor: '#e6e6e6'}}></Divider>
-            <StyledMenuItem onClick={handleSignOutClick}>
-              <img src={signoutImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
-              <span>Sign-Out</span>
-            </StyledMenuItem>
+            </StyledMenuItem> */}
+            <StyledMenuText style={{marginBottom: '-5px', marginTop: '-5px'}}>
+              <div width='24px' height='24px' style={{ marginRight: '8px' }} />
+              <span>{username}</span>
+            </StyledMenuText>
+            <Divider style={{ width: '100%', height: '2px', backgroundColor: '#e6e6e6', marginBottom: '0px', marginTop: '0px' }}></Divider>
+            {!loggedIn && (
+              <StyledMenuItem onClick={() => {
+                handleSignInClick();
+                popupState.close();
+              }}>
+                <img src={settingsImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
+                <span>Sign-In</span>
+              </StyledMenuItem>
+            )}
+            {loggedIn && (
+              <StyledMenuItem onClick={() => {
+                handleSignOutClick();
+                popupState.close();
+              }} style={{marginBottom: '-10px'}}>
+                <img src={signoutImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
+                <span>Sign-Out</span>
+              </StyledMenuItem>
+            )}
           </StyledMenu>
         </React.Fragment>
       )}
@@ -143,8 +233,11 @@ const DropDownMenu = ({ signOut }) => {
 
 
 
-export const Header = ({ signOut }) => {
+export const Header = ({ }) => {
+  const { triggerLogin, LoginButton } = useLogin();
+
   return (
+    <>
     <HeaderContainer>
       <Grid container alignItems="center" justifyContent="space-between" sx={{ pr: '20px' }}>
         <Grid item xs={12} sm={6} textAlign="left">
@@ -161,17 +254,13 @@ export const Header = ({ signOut }) => {
             <NavLink href="/about">About</NavLink>
             <NavLink href="/used_data">Used data</NavLink>
             <NavLink href="https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/docs" target="_blank">SWAGGER UI</NavLink>
-            {/* <NavLink>
-              <IconButton onClick={signOut}>
-                <img src={signoutImage} alt="Signout" style={{ cursor: 'pointer', width: '24px', height: '24px' }} />
-              </IconButton>
-            </NavLink> */}
-            <CustomNavLink>
-              <DropDownMenu signOut={signOut} />
-            </CustomNavLink>
+            <DropDownMenu signIn={triggerLogin} />
           </Grid>
         </Grid>
       </Grid>
     </HeaderContainer>
+    <LoginButton>
+    </LoginButton>
+    </>
   );
 };
