@@ -14,7 +14,7 @@ const About = ({ signOut, user }) => {
         
       </Header>
       <div>
-        <Paper sx={{ height: '100vh', overflow: 'auto', backgroundImage: `url(${BGImage})`, backgroundSize: 'cover'}}>
+        <Paper sx={{ height: '100vh', marginTop:'0px', overflow: 'auto', backgroundImage: `url(${BGImage})`, backgroundSize: 'cover'}}>
           <StyledContainer>
             <StyledDataItem>
             <StyledSubContainer>
