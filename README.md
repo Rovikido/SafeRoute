@@ -49,7 +49,6 @@ The backend precomputes map data, and writes it to the MongoDB. This data can th
 * ✅ User registration and login
 * ✅ User profile
 * 🔳 Landing page
-* 🔳 Beautiful site design
 
 ### DB
 * ✅ Create Database
