@@ -1,122 +1,308 @@
-import React, { useState } from 'react';
-import { withAuthenticator } from '@aws-amplify/ui-react';
-import { Container, Typography, Link, Divider, Button, TextField } from '@mui/material';
-import { Header, StyledContainer, StyledSubContainer, StyledDataItem, StyledDivider, StyledLink, StyledBackground } from './JS/ui_components';
-import { styled } from '@mui/system';
-import signoutImage from './images/signout.png';
-import logo from './images/logo.png';
+import React, { useState, useEffect } from 'react';
+import { Typography, TextField, Divider, Paper, FormHelperText, Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Auth } from 'aws-amplify';
+import { Header, StyledSubContainer, StyledDataItem, StyledBackground, StyledButtonContainer, StyledButton, StyledDisabledButton} from './JS/ui_components';
+import BGImage from './images/background.jpg';
 
-const Profile = ({ signOut, user }) => {
-  const [formData, setFormData] = useState({
-    username: user.username,
-    password: '',
-    confirmPassword: '',
-    previousPassword: '',
-    error: ''
-  });
+const StyledHeader = styled('div')(({ theme }) => ({
+  textAlign: 'center',
+  marginBottom: theme.spacing(0),
+}));
 
-  const handleFormChange = (event) => {
-    setFormData({ ...formData, [event.target.id]: event.target.value, error: '' });
+const StyledContainer = styled(Container)(({ theme }) => ({
+  backgroundColor: '#282c34',
+  color: '#929cb9',
+  padding: theme.spacing(4),
+  borderRadius: theme.spacing(2),
+  marginTop: '50px',
+  marginBottom: '110px'
+}));
+
+const Profile = () => {
+  const [user, setUser] = useState(null);
+  const [prevPassword, setPrevPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoginConfirmed, setIsLoginConfirmed] = useState(false);
+  const [passwordChangeError, setPasswordChangeError] = useState(false);
+  const [passwordChangeErrorMessage, setPasswordChangeErrorMessage] = useState('');
+  const [prevPasswordError, setPrevPasswordError] = useState(false);
+  const [prevPasswordErrorMessage, setPrevPasswordErrorMessage] = useState('');
+  const [loginError, setLoginError] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [successPasswordChangeMessage, setSuccessPasswordChangeMessage] = useState('');
+
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
+  const getCurrentUser = async () => {
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser();
+      setUser(currentUser);
+    } catch (error) {
+      console.log('Error: ', error);
+    }
   };
 
-  const handleSaveChanges = () => {
-    if (formData.password !== formData.confirmPassword) {
-      setFormData({ ...formData, error: "Passwords don't match" });
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setPasswordChangeError(true);
+      setPasswordChangeErrorMessage('New password and confirm password do not match')
       return;
     }
 
-    // Validate previous password
-    if (formData.previousPassword !== user.password) {
-      setFormData({ ...formData, error: 'Incorrect previous password' });
+    if (!isLoginConfirmed) {
+      setLoginError(true);
       return;
     }
 
-    // Handle save changes logic here
-    // You can access the updated username and password using formData.username and formData.password
+    try {
+      setSuccessMessage('');
+      await Auth.changePassword(user, prevPassword, newPassword);
+      setSuccessPasswordChangeMessage('Password changed successfully');
+      setPrevPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setIsLoginConfirmed(false);
+      setPasswordChangeError(false);
+      setPrevPasswordError(false);
+      setLoginError(false);
+    } catch (error) {
+      console.log('Error: ', error);
+      if (error.code === 'NotAuthorizedException'){
+        setPrevPasswordError(true);
+        setPrevPasswordErrorMessage('Incorrect prevoius password')
+      }
+      else {
+        setPrevPasswordError(true);
+        setPrevPasswordErrorMessage(error.message);
+      }
+    }
+  };
+
+  const checkForLogin = async () => {
+    try{
+      const currentUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
+      if (currentUser) {
+        setIsLoginConfirmed(true);
+        setLoginError(false);
+        setSuccessMessage('Password confirmed successfully');
+        return;
+      }
+
+      setIsLoginConfirmed(true);
+      setLoginError(false);
+    }
+    catch(error){
+      setIsLoginConfirmed(false);
+      setLoginError(true);
+    }
   };
 
   return (
-    <>
-      <Header signOut={signOut} />
-      <StyledContainer>
-        <StyledDataItem>
+    <StyledBackground>
+      <Header />
+      <Paper
+        sx={{
+          height: '110vh',
+          marginTop: '0px',
+          overflow: 'auto',
+          backgroundImage: `url(${BGImage})`,
+          backgroundSize: 'cover',
+        }}
+      >
+        <StyledContainer maxWidth="sm">
           <StyledSubContainer>
-            <Typography variant="h6" component="h3" color="primary">
-              <StyledLink href="https://hub.worldpop.org/geodata/summary?id=6545" target="_blank">
-                Worldpop
-              </StyledLink>
-            </Typography>
-            <StyledDivider />
-            <Typography variant="body1">
-              WorldPop (www.worldpop.org - School of Geography and Environmental Science, University of Southampton;
-              Department of Geography and Geosciences, University of Louisville; Departement de Geographie, Universite
-              de Namur) and Center for International Earth Science Information Network (CIESIN), Columbia University
-              (2018). Global High Resolution Population Denominators Project - Funded by The Bill and Melinda Gates
-              Foundation (OPP1134076).
-            </Typography>
-          </StyledSubContainer>
-        </StyledDataItem>
-        <StyledDataItem>
-          <StyledSubContainer>
-            <Typography variant="h6" component="h3" color="primary">
-              Account Settings
-            </Typography>
-            <StyledDivider />
-            <form>
-              <TextField
-                id="username"
-                label="Username"
-                value={formData.username}
-                onChange={handleFormChange}
-                fullWidth
-                margin="normal"
-                disabled={!formData.previousPassword} // Disable until previous password is entered
-              />
-              <TextField
-                id="password"
-                label="New Password"
-                type="password"
-                value={formData.password}
-                onChange={handleFormChange}
-                fullWidth
-                margin="normal"
-                disabled={!formData.previousPassword} // Disable until previous password is entered
-              />
-              <TextField
-                id="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleFormChange}
-                fullWidth
-                margin="normal"
-                disabled={!formData.previousPassword} // Disable until previous password is entered
-              />
-              <TextField
-                id="previousPassword"
-                label="Previous Password"
-                type="password"
-                value={formData.previousPassword}
-                onChange={handleFormChange}
-                fullWidth
-                margin="normal"
-              />
-              {formData.error && (
-                <Typography variant="body2" color="error" gutterBottom>
-                  {formData.error}
+            <StyledHeader>
+              <Typography variant="h4">Profile Page</Typography>
+            </StyledHeader>
+            <StyledDataItem>
+              <Typography variant="h6" style={{ display: 'inline' }}>
+                Welcome,{' '}
+                <Typography variant="h6" style={{ color: 'white', display: 'inline' }}>
+                  @{user?.username}
                 </Typography>
+                !
+              </Typography>
+            </StyledDataItem>
+            <Divider
+              style={{
+                width: '100%',
+                height: '2px',
+                backgroundColor: 'black',
+                marginBottom: '20px',
+                marginTop: '-25px',
+                borderRadius: '100px',
+              }}
+            />
+            <StyledButtonContainer>
+              <StyledButton variant="contained" onClick={checkForLogin}>
+                Confirm Login
+              </StyledButton>
+            </StyledButtonContainer>
+            {/* FormHelperText for previous password error */}
+            {loginError && (
+                <FormHelperText error>User not logged in</FormHelperText>
+            )}
+            <StyledDataItem>
+              {/* FormHelperText for successful password change */}
+              {successMessage && (
+                <FormHelperText sx={{ color: 'green', marginTop: '-15px'}}>{successMessage}</FormHelperText>
               )}
-              <Button variant="contained" color="primary" onClick={handleSaveChanges}>
-                Save Changes
-              </Button>
-            </form>
+
+              <TextField
+                type="password"
+                label="Prevoius Password"
+                value={prevPassword}
+                onChange={(e) => setPrevPassword(e.target.value)}
+                fullWidth
+                margin="normal"
+                disabled={!isLoginConfirmed}
+                inputProps={{
+                  style: {
+                    color: isLoginConfirmed ? '#929cb9' : '#737373',
+                  },
+                }}
+                InputLabelProps={{
+                  style: {
+                    color: isLoginConfirmed ? '#929cb9' : '#737373',
+                  },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderRadius: '150px',
+                      borderColor: '#000000',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#808bb3',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#808bb3',
+                    },
+                    '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+                      borderColor: isLoginConfirmed ? '#000000' : '#737373',
+                    },
+                    '&.Mui-focused': {
+                      color: '#808bb3',
+                    },
+                  },
+                }}
+              />
+              {prevPasswordError && (
+                <FormHelperText error sx={{marginTop: '-7px'}}>
+                  {prevPasswordErrorMessage}
+                </FormHelperText>
+              )}
+              <TextField
+                type="password"
+                label="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                fullWidth
+                margin="normal"
+                disabled={!isLoginConfirmed}
+                inputProps={{
+                  style: {
+                    color: isLoginConfirmed ? '#929cb9' : '#737373',
+                  },
+                }}
+                InputLabelProps={{
+                  style: {
+                    color: isLoginConfirmed ? '#929cb9' : '#737373',
+                  },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderRadius: '150px',
+                      borderColor: '#000000',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#808bb3',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#808bb3',
+                    },
+                    '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+                      borderColor: isLoginConfirmed ? '#000000' : '#737373',
+                    },
+                    '&.Mui-focused': {
+                      color: '#808bb3',
+                    },
+                  },
+                }}
+              />
+
+              {/* FormHelperText for password mismatch error */}
+              {passwordChangeError && (
+                <FormHelperText error sx={{marginTop: '-7px'}}>
+                  {passwordChangeErrorMessage}
+                </FormHelperText>
+              )}
+
+              <TextField
+                type="password"
+                label="Confirm New Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                fullWidth
+                margin="normal"
+                disabled={!isLoginConfirmed}
+                inputProps={{
+                  style: {
+                    color: isLoginConfirmed ? '#929cb9' : '#737373',
+                  },
+                }}
+                InputLabelProps={{
+                  style: {
+                    color: isLoginConfirmed ? '#929cb9' : '#737373',
+                  },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderRadius: '150px',
+                      borderColor: '#000000',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#808bb3',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#808bb3',
+                    },
+                    '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+                      borderColor: isLoginConfirmed ? '#000000' : '#737373',
+                    },
+                    '&.Mui-focused': {
+                      color: '#808bb3',
+                    },
+                  },
+                }}
+              />
+            </StyledDataItem>
+            <StyledButtonContainer>
+            {isLoginConfirmed && (
+              <StyledButton variant="contained" onClick={handleChangePassword}>
+                Change Password
+              </StyledButton>
+            )}
+            {!isLoginConfirmed && (
+              <StyledDisabledButton variant="contained" >
+                Change Password
+              </StyledDisabledButton>
+            )}
+            </StyledButtonContainer>
+            {successPasswordChangeMessage && (
+              <FormHelperText sx={{ color: 'green'}}>{successPasswordChangeMessage}</FormHelperText>
+            )}
           </StyledSubContainer>
-        </StyledDataItem>
-      </StyledContainer>
-    </>
+        </StyledContainer>
+      </Paper>
+    </StyledBackground>
   );
 };
 
-export default withAuthenticator(Profile, {
-  socialProviders: ['google'],
-});
+export default Profile;
