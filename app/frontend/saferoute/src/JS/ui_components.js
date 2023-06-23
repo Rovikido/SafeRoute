@@ -1,31 +1,32 @@
 import React, {useState, useEffect} from 'react';
 import { Amplify } from '@aws-amplify/core';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Menu, Container, Link, Divider, Grid, IconButton } from '@mui/material';
+import { Button, Menu, Container, Link, Divider, Grid, IconButton } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { styled } from '@mui/system';
 import { useLogin } from '../LoginButton';
 
 import signoutImage from '../images/signout.png';
+import signinImage from '../images/signin.png';
 import settingsImage from '../images/settings.png';
 import profileImage from '../images/profile.png';
 import logo from '../images/logo.png';
 import BGImage from '../images/background.jpg';
 
 export const StyledContainer = styled(Container)(({ theme }) => ({
-  backgroundColor: '#3d4d5c',
+  backgroundColor: '#282c34',
   color: '#e6e6e6',
-  padding: theme.spacing(2),
-  borderRadius: theme.spacing(1),
+  padding: theme.spacing(4),
+  borderRadius: theme.spacing(2),
   marginTop: '50px',
   marginBottom: '110px'
 }));
 
 export const StyledSubContainer = styled('div')(({ theme }) => ({
-  backgroundColor: '#1c2833',
+  backgroundColor: '#20232a',
   padding: theme.spacing(2),
-  borderRadius: theme.spacing(1),
+  borderRadius: theme.spacing(2),
 }));
 
 export const StyledDataItem = styled('div')(({ theme }) => ({
@@ -53,6 +54,28 @@ export const StyledBackground = styled('div')({
   backgroundImage: `url(${BGImage})`,
   backgroundSize: 'cover',
 });
+
+export const StyledButtonContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  marginTop: theme.spacing(2),
+}));
+
+export const StyledButton = styled(Button)(({ theme }) => ({
+  borderRadius: '100px',
+  backgroundColor: '#5e6ea1',
+  color: '#ffffff',
+  width: '100%',
+  padding: '10px',
+  '&:hover': {
+    backgroundColor: '#7e8bb4',
+  },
+}));
+
+export const StyledDisabledButton = styled(StyledButton)(({ theme }) => ({
+  backgroundColor: '#737373',
+  pointerEvents: 'none'
+}));
 
 const HeaderContainer = styled('header')({
   backgroundColor: 'black',
@@ -114,10 +137,9 @@ const StyledMenuText = styled(MenuItem)({
   padding: '25px',
   color: '#a6a6a6',
   textDecoration: 'none',
-  fontSize: '18px',
+  fontSize: '20px',
   borderRadius: '5px',
   pointerEvents: 'none',
-  textTransform: 'uppercase',
 });
 
 
@@ -157,7 +179,8 @@ const DropDownMenu = ({ signIn }) => {
 
   useEffect(() => {
     const fetchUsername = async () => {
-      const fetchedUsername = await getUsername();
+      var fetchedUsername = '@';
+      fetchedUsername += await getUsername();
       setUsername(fetchedUsername);
     };
 
@@ -197,21 +220,23 @@ const DropDownMenu = ({ signIn }) => {
             </IconButton>
           </CustomNavLink>
           <StyledMenu {...bindMenu(popupState)}>
-            {/* <StyledMenuItem onClick={handleAccountClick}>
-              <img src={settingsImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
-              <span>Account</span>
-            </StyledMenuItem> */}
             <StyledMenuText style={{marginBottom: '-5px', marginTop: '-5px'}}>
               <div width='24px' height='24px' style={{ marginRight: '8px' }} />
               <span>{username}</span>
             </StyledMenuText>
+            {loggedIn && (
+            <StyledMenuItem onClick={handleAccountClick}>
+              <img src={settingsImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
+              <span>Account</span>
+            </StyledMenuItem>
+          )}
             <Divider style={{ width: '100%', height: '2px', backgroundColor: '#e6e6e6', marginBottom: '0px', marginTop: '0px' }}></Divider>
             {!loggedIn && (
               <StyledMenuItem onClick={() => {
                 handleSignInClick();
                 popupState.close();
               }}>
-                <img src={settingsImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
+                <img src={signinImage} width='24px' height='24px' style={{ marginRight: '12px' }} />
                 <span>Sign-In</span>
               </StyledMenuItem>
             )}
