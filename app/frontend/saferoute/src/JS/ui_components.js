@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Amplify } from '@aws-amplify/core';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Button, Menu, Container, Link, Divider, Grid, IconButton } from '@mui/material';
+import { Button, Menu, Container, Link, Divider, Grid, IconButton, Paper } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { styled } from '@mui/system';
@@ -59,6 +59,14 @@ export const StyledButtonContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   marginTop: theme.spacing(2),
+}));
+
+export const BGPaper = styled(Paper)(({ theme }) => ({
+  height: '100vh', 
+  marginTop:'0px', 
+  overflow: 'auto', 
+  backgroundImage: `url(${BGImage})`, 
+  backgroundSize: 'cover'
 }));
 
 export const StyledButton = styled(Button)(({ theme }) => ({

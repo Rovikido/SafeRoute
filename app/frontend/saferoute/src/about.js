@@ -1,7 +1,7 @@
 import React from 'react';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import { Container, Typography, Link, Divider, Paper } from '@mui/material';
-import {Header, StyledContainer, StyledSubContainer, StyledDataItem, StyledDivider, StyledLink, StyledBackground} from './JS/ui_components';
+import {Header, StyledContainer, StyledSubContainer, StyledDataItem, StyledDivider, StyledLink, StyledBackground, BGPaper} from './JS/ui_components';
 import BGImage from 'images/background.jpg';
 import signoutImage from './images/signout.png';
 import logo from './images/logo.png';
@@ -14,7 +14,7 @@ const About = ({ signOut, user }) => {
         
       </Header>
       <div>
-        <Paper sx={{ height: '100vh', marginTop:'0px', overflow: 'auto', backgroundImage: `url(${BGImage})`, backgroundSize: 'cover'}}>
+        <BGPaper>
           <StyledContainer>
             <StyledDataItem>
             <StyledSubContainer>
@@ -84,7 +84,7 @@ const About = ({ signOut, user }) => {
               </StyledSubContainer>
             </StyledDataItem>
           </StyledContainer>
-        </Paper>
+        </BGPaper>
       </div>
     </StyledBackground>
   );

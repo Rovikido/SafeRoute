@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography, TextField, Divider, Paper, FormHelperText, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Auth } from 'aws-amplify';
-import { Header, StyledSubContainer, StyledDataItem, StyledBackground, StyledButtonContainer, StyledButton, StyledDisabledButton} from './JS/ui_components';
+import { Header, StyledSubContainer, StyledDataItem, StyledBackground, StyledButtonContainer, StyledButton, StyledDisabledButton, BGPaper} from './JS/ui_components';
 import BGImage from './images/background.jpg';
 
 const StyledHeader = styled('div')(({ theme }) => ({
@@ -104,15 +104,7 @@ const Profile = () => {
   return (
     <StyledBackground>
       <Header />
-      <Paper
-        sx={{
-          height: '110vh',
-          marginTop: '0px',
-          overflow: 'auto',
-          backgroundImage: `url(${BGImage})`,
-          backgroundSize: 'cover',
-        }}
-      >
+      <BGPaper>
         <StyledContainer maxWidth="sm">
           <StyledSubContainer>
             <StyledHeader>
@@ -300,7 +292,7 @@ const Profile = () => {
             )}
           </StyledSubContainer>
         </StyledContainer>
-      </Paper>
+      </BGPaper>
     </StyledBackground>
   );
 };
