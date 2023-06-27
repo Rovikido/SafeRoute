@@ -1,4 +1,4 @@
-# [SafeRoute (in progress)](https://main.d3d4kky5khtwtb.amplifyapp.com)
+# [SafeRoute](https://main.d3d4kky5khtwtb.amplifyapp.com)
 
 login: qwerty, password: qwerty12<br />
 SafeRoute overlays a map with a danger level heatmap based on crime data. <br />
@@ -70,7 +70,6 @@ The backend precomputes map data, and writes it to the MongoDB. This data can th
 
 ### Loggs
 * ✅ Add logs for API
-* 🔳 Add logs for Main app
 
 ### Tests
 * ✅/🔳 testing algorithm
