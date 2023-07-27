@@ -4,7 +4,7 @@ NOTE: currently googleMapsAPI on deploy is diabled, due to trial period ending. 
 login: qwerty, password: qwerty12<br />
 SafeRoute overlays a map with a danger level heatmap based on crime data. <br />
 The application is built using FastAPI/MongoDB on the backend and React on frontend. API runs in Docker, deployed on AWS Lambda, and main app is deployed on AWS Amplify.<br />
-
+<img src="other/github_repo_images/screenshot.png" width="512"/><br />
 ## Installation
 
 To deploy project you will need to:
