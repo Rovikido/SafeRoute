@@ -1,5 +1,6 @@
-# [SafeRoute (in progress)](https://main.d3d4kky5khtwtb.amplifyapp.com)
+# [SafeRoute](https://main.d3d4kky5khtwtb.amplifyapp.com) 
 
+NOTE: currently googleMapsAPI on deploy is diabled, due to trial period ending. Contact me, to reactivate it, if needed. The heatmaps still work, but design is gone currently<br /><br />
 login: qwerty, password: qwerty12<br />
 SafeRoute overlays a map with a danger level heatmap based on crime data. <br />
 The application is built using FastAPI/MongoDB on the backend and React on frontend. API runs in Docker, deployed on AWS Lambda, and main app is deployed on AWS Amplify.<br />
@@ -70,7 +71,6 @@ The backend precomputes map data, and writes it to the MongoDB. This data can th
 
 ### Loggs
 * ✅ Add logs for API
-* 🔳 Add logs for Main app
 
 ### Tests
 * ✅/🔳 testing algorithm
