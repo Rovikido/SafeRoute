@@ -283,9 +283,9 @@ export const Header = ({ }) => {
         </Grid>
         <Grid item xs={12} sm={6} textAlign="right">
           <Grid container justifyContent="flex-end" alignItems="center">
-            <NavLink href="/map">Map</NavLink>
-            <NavLink href="/about">About</NavLink>
-            <NavLink href="/used_data">Used data</NavLink>
+            <NavLink href="/map">MAP</NavLink>
+            <NavLink href="/about">ABOUT</NavLink>
+            <NavLink href="/used_data">USED DATA</NavLink>
             <NavLink href="https://33faoddqwe4bjauetiiaatreye0uirjf.lambda-url.eu-central-1.on.aws/docs" target="_blank">SWAGGER UI</NavLink>
             <DropDownMenu signIn={triggerLogin} />
           </Grid>
